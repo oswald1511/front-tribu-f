@@ -40,8 +40,45 @@
                     <h1 class="page-title">Reporte de costos por proyecto</h1>
                     <section class="filters">
                         <div class="filter-group">
-                            <label>Año</label>
-                            <div class="select-wrapper"><select><option>2025</option></select></div>
+                            <label>Año Fiscal</label>
+                            <div class="select-wrapper">
+                                <select id="filtro-anio">
+                                    <option value="2025">2025</option>
+                                    <option value="2024">2024</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="filter-group">
+                            <label>Proyecto</label>
+                            <div class="select-wrapper">
+                                <select id="filtro-proyecto">
+                                    <option value="todos">Todos los proyectos</option>
+                                    <option value="crm_implementacion">CRM Implementación</option>
+                                    <option value="crm_migracion">CRM Migración</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="filter-group">
+                            <label>Tipo de Reporte</label>
+                            <div class="select-wrapper">
+                                <select id="tipo-reporte">
+                                    <option value="mensual">Consolidado Mensual</option>
+                                    <option value="semanal">Detalle Semanal</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="filter-group" id="container-semana">
+                            <label>Inicio de Semana</label>
+                            <input type="date" id="filtro-fecha-inicio" value="2025-11-10">
+                        </div>
+
+                        <div class="search-bar-wrapper">
+                            <button id="btn-generar-reporte" class="btn-preload">
+                                <i class="fas fa-chart-line"></i> Generar
+                            </button>
                         </div>
                     </section>
                     <section class="project-grid-container">

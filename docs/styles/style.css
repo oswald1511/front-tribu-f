@@ -1,0 +1,477 @@
+/* --- Variables de Color (Unificadas) --- */
+:root {
+    /* Colores base */
+    --color-header-bg: #22967a;
+    --color-header-btn: #48b398;
+    --color-select-border: #22967a;
+    --color-text-light: #ffffff;
+    --color-text-dark: #333333;
+    --color-text-header-btn: #ffffff;
+    --color-text-title: #22967a;
+    --color-text-select: #22967a;
+    --color-background: #f9f6ef;
+    --color-grid-lines: #ede9e1;
+
+    /* Colores Vista 1 (Costo Perfil) */
+    --color-table-header: #48b398;
+    --color-table-row: #a8d8cb;
+    --color-button-preload: #22967a;
+
+    /* Colores Vista 2 (Reporte Costos) */
+    --color-table-row-light: #e0f0eb;
+    --color-table-footer: #cde6e0;
+    --color-excel-border: #cdded9;
+    
+    /* Colores Nav Switch */
+    --color-switch-bg: var(--color-header-btn);
+    --color-switch-slider-bg: var(--color-text-light);
+    --color-switch-text-inactive: var(--color-text-light);
+    --color-switch-text-active: var(--color-header-bg);
+}
+
+/* --- Estilos Globales --- */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+    background-color: #f0f2f5;
+    color: var(--color-text-dark);
+    padding: 2rem 1rem;
+}
+
+/* --- Contenedor de la App --- */
+.app-container {
+    max-width: 95%; /* Usamos 95% para acomodar mejor la tabla ancha */
+    margin: 0 auto;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+}
+
+
+/* --- NUEVO DROPDOWN CON ENLACES (CSS PURO) --- */
+.header-dropdown {
+    position: relative;
+    display: inline-block;
+    margin-left: 20px;
+}
+
+/* El botón que se ve siempre */
+.dropbtn {
+    background-color: rgba(255, 255, 255, 0.2);
+    color: #fff;
+    padding: 10px 25px 10px 20px;
+    font-size: 0.95rem;
+    font-weight: 600;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 50px;
+    cursor: pointer;
+    min-width: 160px;
+    text-align: left;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: background-color 0.3s;
+    text-decoration: none; /* Importante si usamos <a> como botón */
+}
+
+.dropbtn:hover {
+    background-color: rgba(255, 255, 255, 0.3);
+}
+
+.dropbtn i {
+    font-size: 0.8rem;
+    margin-left: 10px;
+}
+
+/* El menú que aparece al pasar el mouse */
+.dropdown-content {
+    display: none; /* Oculto por defecto */
+    position: absolute;
+    top: 110%; /* Justo debajo del botón */
+    left: 0;
+    background-color: #ffffff;
+    min-width: 100%; /* Del mismo ancho que el botón */
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    border-radius: 12px;
+    overflow: hidden;
+    z-index: 100;
+}
+
+/* Enlaces dentro del menú */
+.dropdown-content a {
+    color: #333;
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+    font-weight: 500;
+    font-size: 0.9rem;
+    transition: background-color 0.2s;
+}
+
+.dropdown-content a:hover {
+    background-color: #f1f1f1;
+    color: var(--color-header-bg);
+}
+
+/* --- AHORA (AGREGAR ESTO) --- */
+.dropdown-content.show {
+    display: block;
+    animation: fadeIn 0.2s;
+}
+
+/* Opcional: Para que la flechita gire cuando está abierto */
+.dropbtn i.rotate {
+    transform: rotate(180deg);
+    transition: transform 0.3s;
+}
+
+.app-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: var(--color-header-bg);
+    color: var(--color-text-light);
+    padding: 10px 25px;
+}
+
+.header-left {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.logo {
+    background-color: var(--color-text-light);
+    color: var(--color-header-bg);
+    font-weight: 700;
+    font-size: 1.1rem;
+    width: 36px;
+    height: 36px;
+    display: grid;
+    place-items: center;
+    border-radius: 50%;
+}
+
+.logo-psa {
+    font-weight: 700;
+    font-size: 1.4rem;
+}
+
+/* --- Navegación (Estilo Slide) --- */
+/* 1. Nuevo estilo para el contenedor padre (para centrar el switch) */
+.sub-nav-container {
+    display: flex;
+    justify-content: center; /* Esto centra el switch horizontalmente */
+    width: 100%;
+    margin-bottom: 2rem; /* Un poco de aire abajo */
+}
+
+/* --- NAVEGACIÓN TIPO PESTAÑAS (LINKS) --- */
+.nav-switch {
+    position: relative;
+    display: inline-flex;
+    background-color: var(--color-switch-bg); /* Verde clarito de fondo */
+    border-radius: 25px;
+    padding: 5px;
+    gap: 5px;
+}
+
+.nav-switch-item {
+    background: transparent;
+    color: var(--color-switch-text-inactive); /* Texto blanco */
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-weight: 500;
+    font-size: 0.9rem;
+    cursor: pointer;
+    text-decoration: none; /* Quita subrayado de links */
+    min-width: 150px;
+    text-align: center;
+    transition: all 0.3s ease;
+}
+
+/* ESTILO DEL BOTÓN ACTIVO (IMPORTANTE) */
+.nav-switch-item.active {
+    background-color: #ffffff; /* Fondo blanco */
+    color: var(--color-header-bg); /* Texto verde oscuro */
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    font-weight: 700;
+}
+
+.nav-switch-item:hover:not(.active) {
+    background-color: rgba(255,255,255,0.1); /* Efecto hover suave */
+}
+
+/* --- Contenido Principal Común --- */
+.main-content {
+    background-color: var(--color-background);
+    padding: 2rem 1.5rem;
+    background-image: 
+        linear-gradient(var(--color-grid-lines) 1px, transparent 1px), 
+        linear-gradient(90deg, var(--color-grid-lines) 1px, transparent 1px);
+    background-size: 25px 25px;
+}
+
+.page-title {
+    color: var(--color-text-title);
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 1.5rem;
+}
+
+/* --- Filtros y Búsqueda Comunes --- */
+.filters {
+    display: flex;
+    gap: 2rem;
+    margin-bottom: 2rem;
+    align-items: flex-end;
+}
+
+.filter-group {
+    display: flex;
+    flex-direction: column;
+}
+
+.filter-group label {
+    font-size: 0.9rem;
+    color: #555;
+    margin-bottom: 0.5rem;
+    padding-left: 15px;
+}
+
+.select-wrapper {
+    position: relative;
+    display: inline-block;
+}
+
+.filter-group select {
+    background-color: var(--color-text-light);
+    color: var(--color-text-select);
+    border: 2px solid var(--color-select-border);
+    border-radius: 50px;
+    padding: 12px 40px 12px 25px;
+    font-size: 1.1rem;
+    font-weight: 700;
+    cursor: pointer;
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    min-width: 200px;
+}
+
+.select-wrapper select {
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%2322967a' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><polyline points='6 9 12 15 18 9'/></svg>");
+    background-repeat: no-repeat;
+    background-position: right 18px center;
+    background-size: 12px 12px;
+}
+
+.search-bar-wrapper {
+    margin-left: auto;
+}
+
+.search-bar {
+    display: flex;
+    align-items: center;
+    background-color: var(--color-text-light);
+    border: 1px solid #ddd;
+    border-radius: 50px;
+    padding: 12px 20px;
+    width: 300px;
+}
+
+.search-bar i {
+    color: #999;
+    margin-right: 10px;
+}
+
+.search-bar input {
+    border: none;
+    outline: none;
+    font-size: 1rem;
+    background: transparent;
+    width: 100%;
+}
+
+.search-bar input::placeholder {
+    color: #aaa;
+}
+
+
+/* --- 
+--- ESTILOS VISTA 1: COSTO POR PERFIL 
+--- */
+
+/* --- Acciones (Vista 1) --- */
+.actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+}
+
+.btn-preload {
+    background-color: var(--color-button-preload);
+    color: var(--color-text-light);
+    border: none;
+    border-radius: 50px;
+    padding: 12px 24px;
+    font-weight: 700;
+    font-size: 1rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    transition: all 0.2s ease;
+}
+
+.btn-preload:hover {
+    opacity: 0.9;
+}
+
+/* --- Tabla de Costos (Vista 1) --- */
+.costs-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0 6px;
+    padding-right: 10px;
+}
+
+.costs-table th {
+    background-color: var(--color-table-header);
+    color: var(--color-text-light);
+    padding: 16px 20px;
+    text-align: left;
+    font-weight: 700;
+}
+
+.costs-table th:first-child {
+    border-top-left-radius: 8px;
+}
+
+.costs-table tbody td {
+    background-color: var(--color-table-row);
+    color: var(--color-text-dark);
+    padding: 18px 20px;
+    vertical-align: middle;
+    font-weight: 500;
+}
+
+.costs-table tbody tr td:first-child {
+    border-top-left-radius: 8px;
+    border-bottom-left-radius: 8px;
+}
+
+.costs-table tbody tr td:last-child {
+    border-top-right-radius: 8px;
+    border-bottom-right-radius: 8px;
+}
+
+
+/* --- 
+--- ESTILOS VISTA 2: REPORTE DE COSTOS (COMBINADO)
+--- */
+
+/* 1. LAYOUT Y CONTENEDOR (Para que se ajuste a la pantalla) */
+.project-grid-container {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+}
+
+.excel-grid-wrapper {
+    width: 100%;
+    max-width: 100%;
+    overflow-x: auto; /* Scroll horizontal si es necesario en móviles */
+    border-radius: 8px;
+    border: 1px solid var(--color-excel-border);
+    background-color: #fff;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05); /* Sombra suave para estética */
+}
+
+/* 2. ESTRUCTURA DE LA TABLA */
+.excel-grid {
+    width: 100%;
+    min-width: 600px; /* Mínimo para que no se aplaste en móviles muy chicos */
+    border-collapse: collapse;
+}
+
+.excel-grid th, .excel-grid td {
+    padding: 14px 18px;
+    border: 1px solid var(--color-excel-border);
+    font-size: 0.95rem;
+    white-space: nowrap; /* Evita que el texto se rompa feo */
+}
+
+/* 3. ESTÉTICA DE ENCABEZADOS (Recuperada) */
+.excel-grid thead th {
+    background-color: var(--color-table-header); /* Tu verde original */
+    color: var(--color-text-light);
+    font-weight: 700;
+    text-align: left;
+    position: sticky; /* Encabezado fijo al hacer scroll */
+    top: 0;
+    z-index: 10;
+    box-shadow: 0 2px 2px rgba(0,0,0,0.1);
+}
+
+/* Alineación de montos a la derecha */
+.excel-grid thead th:not(:first-child),
+.excel-grid tbody td:not(:first-child) {
+    text-align: right;
+}
+
+/* 4. EFECTO CEBRA Y HOVER (Recuperado) */
+.excel-grid tbody tr:nth-child(even) {
+    background-color: #ffffff;
+}
+.excel-grid tbody tr:nth-child(odd) {
+    background-color: var(--color-table-row-light); /* Verde muy suave */
+}
+
+.excel-grid tbody tr:hover {
+    background-color: var(--color-table-row); /* Verde más oscuro al pasar mouse */
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+/* 5. PRIMERA COLUMNA FIJA (Efecto Excel) */
+.excel-grid tbody td:first-child {
+    font-weight: 600;
+    color: var(--color-header-bg);
+    position: sticky;
+    left: 0;
+    background-color: inherit; /* Hereda el color de la fila (cebra) */
+    z-index: 5;
+    border-right: 2px solid var(--color-header-bg); /* Borde derecho más grueso */
+}
+
+/* Corrección específica para el encabezado de la primera columna */
+.excel-grid thead th:first-child {
+    position: sticky;
+    left: 0;
+    z-index: 20; /* Por encima de todo */
+    background-color: var(--color-table-header);
+    border-right: 2px solid rgba(255,255,255,0.2);
+}
+
+/* 6. PIE DE TABLA (TFOOT) - Si lo usas */
+.excel-grid tfoot td {
+    background-color: var(--color-table-footer);
+    font-weight: 700;
+    border-top: 2px solid var(--color-header-bg);
+}
+
+/* 7. VISIBILIDAD DE VISTAS (Lógica funcional) */
+.finance-view {
+    display: none;
+}
+.finance-view.active {
+    display: block;
+    animation: fadeIn 0.3s ease-in-out;
+}

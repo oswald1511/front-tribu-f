@@ -118,6 +118,27 @@
             e.target.blur();
         }
     });
+
+async function cargaCostoHora(target, rolId, mes) {
+        const nuevoValor = target.value;
+        const res = await fetch(`https://modulo-finanzas.onrender.com/costos-rol/${rolId}/${mes}`, {
+                            method: 'PUT',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify({
+                                costo_hora: nuevoValor
+                            })
+                        });
+        const result = await res.json();
+        if (res.ok) {
+            fetchAndRenderCosts(); // refresca la tabla
+        } else {
+            alert('Error: ' + (result.error || 'Error desconocido'));
+        }
+        console.log(result);
+    }
+
 async function fetchAndRenderCosts() {
     const monthInput = document.getElementById('filtro-mes-tabla');
     if (!monthInput) return;
@@ -149,7 +170,7 @@ async function fetchAndRenderCosts() {
                 <td>
                     <div class="input-with-symbol">
                         <span>$</span>
-                        <input type="number" readonly class="cost-input-inline" value="${item.costo_hora}">
+                        <input type="number" readonly class="cost-input-inline" value="${item.costo_hora}" onchange="cargaCostoHora(event.target, '${item.rol_id}', '${item.mes}')">
                     </div>
                 </td>
             `;
@@ -160,7 +181,7 @@ async function fetchAndRenderCosts() {
                 e.target.removeAttribute('readonly');
                 e.target.focus();
             }
-    });
+        });
     } catch (err) {
         console.error('Error al obtener los costos o roles:', err);
     }

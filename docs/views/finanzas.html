@@ -1,114 +1,13 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Costo por Proyecto - Gestión PSA</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <link rel="stylesheet" href="../styles/style.css">
-</head>
-<body>
-
-    <div class="app-container">
-        <header class="app-header">
-            <div class="header-left">
-                <div class="logo">M</div>
-                <div class="header-dropdown">
-                    <div class="dropbtn">
-                        Finanzas <i class="fas fa-chevron-down"></i>
-                    </div>
-                    <div class="dropdown-content">
-                        <a href="carga-horas.html">Carga de Horas</a>
-                        <a href="finanzas.html" style="font-weight:bold; color:var(--color-header-bg);">Finanzas</a>
-                    </div>
-                </div>
-            </div>
-            <div class="header-right"><span class="logo-psa">PSA</span></div>
-        </header>
-
-        <main class="main-content">
-            <div id="modulo-finanzas-content">
-                
-                <div class="sub-nav-container">
-                    <nav class="nav-switch">
-                        <a href="#" class="nav-switch-item active">Costo por proyecto</a>
-                        <a href="costo-rol.html" class="nav-switch-item">Costo por Rol</a>
-                    </nav>
-                </div>
-
-                <div class="finance-view active">
-                    <h1 class="page-title">Reporte de costos por proyecto</h1>
-                    
-                    <section class="filters" style="background: #e0f0eb; padding: 20px; border-radius: 12px; margin-bottom: 25px; border: 1px solid var(--color-excel-border); align-items: flex-end;">
-                        
-                        <div class="filter-group">
-                            <label>Año Fiscal</label>
-                            <select id="filtro-anio" class="input-psa">
-                                <option value="2025">2025</option>
-                                <option value="2024">2024</option>
-                            </select>
-                        </div>
-
-                        <div class="filter-group">
-                            <label>Proyecto</label>
-                            <select id="filtro-proyecto" class="input-psa" style="min-width: 220px;">
-                                <option value="todos">Todos los proyectos</option>
-                                <option value="crm_implementacion">CRM Implementación</option>
-                                <option value="crm_migracion">CRM Migración</option>
-                            </select>
-                        </div>
-
-                        <div class="filter-group">
-                            <label>Tipo de Reporte</label>
-                            <select id="tipo-reporte" class="input-psa">
-                                <option value="mensual">Consolidado Mensual</option>
-                                <option value="semanal">Detalle Semanal</option>
-                            </select>
-                        </div>
-
-                        <div class="filter-group" id="container-semana">
-                            <label>Inicio de Semana</label>
-                            <input type="date" id="filtro-fecha-inicio" class="input-psa" value="2025-11-10">
-                        </div>
-
-                        <div class="search-bar-wrapper">
-                            <button id="btn-generar-reporte" class="btn-preload" style="margin-bottom: 2px;">
-                                <i class="fas fa-chart-line"></i> Generar
-                            </button>
-                        </div>
-                    </section>
-
-                    <section class="project-grid-container">
-                        <div class="excel-grid-wrapper">
-                            <table class="excel-grid">
-                                <thead>
-                                    <tr>
-                                        <th>Proyecto</th>
-                                        <th style="text-align: right;">Costo Total</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <td>Demo CRM</td>
-                                        <td style="text-align: right;">$ 100.0</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Migración Legacy</td>
-                                        <td style="text-align: right;">$ 2,500.0</td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    </section>
-                </div>
-
-            </div>
-        </main>
-    </div>
-
-    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
-    <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/es.js"></script>
-    <script src="../scripts/script.js"></script>
-</body>
-</html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Redirigiendo…</title>
+    <meta http-equiv="refresh" content="0; url=costo-proyecto.html">
+  </head>
+  <body>
+    <p>Redirigiendo a <a href="costo-proyecto.html">Costo por Proyecto</a>…</p>
+    <script>location.replace('costo-proyecto.html');</script>
+  </body>
+  </html>

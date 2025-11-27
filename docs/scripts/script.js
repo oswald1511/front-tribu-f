@@ -99,7 +99,7 @@ async function fetchAndRenderCostosProyecto() {
             // Montar celdas de meses
             const monthCells = months.map(mKey => {
                 const val = item[mKey] || 0;
-                return `<td style="text-align: right;">${formatCurrency(val)}</td>`;
+                return `<td style="text-align: center;">${formatCurrency(val)}</td>`;
             }).join('');
 
             const total = item.total || Object.values(item).reduce((acc,v) => {
@@ -110,7 +110,7 @@ async function fetchAndRenderCostosProyecto() {
             tr.innerHTML = `
                 <td>${escapeHtml(nombreProyecto)}</td>
                 ${monthCells}
-                <td style="text-align: right;">${formatCurrency(total)}</td>
+                <td style="text-align: center;">${formatCurrency(total)}</td>
             `;
             tableBody.appendChild(tr);
         });

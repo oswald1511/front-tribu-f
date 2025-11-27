@@ -56,6 +56,8 @@
                             
                             <div class="filter-group">
                                 <label for="mes-destino">Mes Destino</label>
+                                <!-- script movido al final del archivo -->
+                                </script>
                                 <input type="month" id="mes-destino" class="input-psa" value="2025-12">
                             </div>
 
@@ -89,36 +91,7 @@
                                         <th>Costo Hora Actual</th>
                                         <th style="text-align: center; width: 100px;">Acciones</th> </tr>
                                 </thead>
-                                <tbody>
-                                    <tr>
-                                        <td>Desarrollador Senior</td>
-                                        <td>
-                                            <div class="input-with-symbol">
-                                                <span>$</span>
-                                                <input type="number" class="cost-input-inline" value="50.0" disabled>
-                                            </div>
-                                        </td>
-                                        <td style="text-align: center;">
-                                            <button class="btn-icon-action" title="Modificar Costo">
-                                                <i class="fas fa-pencil-alt"></i>
-                                            </button>
-                                        </td>
-                                    </tr>
-
-                                    <tr>
-                                        <td>Arquitecto Fantasma</td>
-                                        <td>
-                                            <div class="input-with-symbol">
-                                                <span>$</span>
-                                                <input type="number" class="cost-input-inline" value="0.0" disabled>
-                                            </div>
-                                        </td>
-                                        <td style="text-align: center;">
-                                            <button class="btn-icon-action" title="Modificar Costo">
-                                                <i class="fas fa-pencil-alt"></i>
-                                            </button>
-                                        </td>
-                                    </tr>
+                                <tbody id="costs-table-body">
                                 </tbody>
                             </table>
                         </div>
@@ -135,4 +108,60 @@
 
     <script src="../scripts/script.js"></script>
 </body>
+<script>
+async function fetchAndRenderCosts() {
+    const monthInput = document.getElementById('filtro-mes-tabla');
+    if (!monthInput) return;
+    const visualizedKey = monthInput.value.trim();
+
+    try {
+        // Fetch costos por rol
+        const res = await fetch('https://modulo-finanzas.onrender.com/costos-rol');
+        const data = await res.json();
+        // Fetch roles info
+        const resRoles = await fetch('https://corsproxy.io/?https://anypoint.mulesoft.com/mocking/api/v1/sources/exchange/assets/32c8fe38-22a6-4fbb-b461-170dfac937e4/roles-api/1.0.0/m/roles');
+        const roles = await resRoles.json();
+
+        // Filtra por mes en formato 'YYYY-MM'
+        const filtered = data.filter(item => {
+            return item.mes === visualizedKey;
+        });
+        const tbody = document.getElementById('costs-table-body');
+        tbody.innerHTML = '';
+        filtered.forEach(item => {
+            const rolInfo = roles.find(r => r.id === item.rol_id);
+            let rolDisplay = item.rol_id;
+            if (rolInfo) {
+                rolDisplay = `${rolInfo.nombre} ${rolInfo.experiencia}`;
+            }
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+                <td>${rolDisplay}</td>
+                <td>
+                    <div class="input-with-symbol">
+                        <span>$</span>
+                        <input type="number" class="cost-input-inline" value="${item.costo_hora}" disabled>
+                    </div>
+                </td>
+                <td style="text-align: center;">
+                    <button class="btn-icon-action" title="Modificar Costo">
+                        <i class="fas fa-pencil-alt"></i>
+                    </button>
+                </td>
+            `;
+            tbody.appendChild(tr);
+        });
+    } catch (err) {
+        console.error('Error al obtener los costos o roles:', err);
+    }
+}
+// Ejecuta al cargar la página
+window.addEventListener('DOMContentLoaded', () => {
+    fetchAndRenderCosts();
+    const monthInput = document.getElementById('filtro-mes-tabla');
+    if (monthInput) {
+        monthInput.addEventListener('change', fetchAndRenderCosts);
+    }
+});
+</script>
 </html>

@@ -77,9 +77,7 @@
                             <label for="filtro-mes-tabla">Filtrar Mes Visualizado</label>
                             <input type="month" id="filtro-mes-tabla" class="input-psa" value="2025-12">
                         </div>
-                        <button class="btn-preload" id="btn-guardar-cambios">
-                            <i class="fas fa-save"></i> Guardar Cambios
-                        </button>
+                        <!-- Botón de guardar cambios eliminado -->
                     </section>
 
                     <div class="project-grid-container">
@@ -89,7 +87,7 @@
                                     <tr>
                                         <th>Rol</th>
                                         <th>Costo Hora Actual</th>
-                                        <th style="text-align: center; width: 100px;">Acciones</th> </tr>
+                                    </tr>
                                 </thead>
                                 <tbody id="costs-table-body">
                                 </tbody>
@@ -109,6 +107,23 @@
     <script src="../scripts/script.js"></script>
 </body>
 <script>
+    // Permitir editar el costo por hora solo al hacer doble click
+    document.addEventListener('dblclick', function(e) {
+        if (e.target.classList.contains('cost-input-inline')) {
+            e.target.removeAttribute('disabled');
+            e.target.focus();
+        }
+    });
+    document.addEventListener('blur', function(e) {
+        if (e.target.classList.contains('cost-input-inline')) {
+            e.target.setAttribute('disabled', '');
+        }
+    }, true);
+    document.addEventListener('keydown', function(e) {
+        if (e.target.classList.contains('cost-input-inline') && (e.key === 'Enter')) {
+            e.target.blur();
+        }
+    });
 async function fetchAndRenderCosts() {
     const monthInput = document.getElementById('filtro-mes-tabla');
     if (!monthInput) return;
@@ -140,13 +155,8 @@ async function fetchAndRenderCosts() {
                 <td>
                     <div class="input-with-symbol">
                         <span>$</span>
-                        <input type="number" class="cost-input-inline" value="${item.costo_hora}" disabled>
+                        <input type="number" class="cost-input-inline" value="${item.costo_hora}">
                     </div>
-                </td>
-                <td style="text-align: center;">
-                    <button class="btn-icon-action" title="Modificar Costo">
-                        <i class="fas fa-pencil-alt"></i>
-                    </button>
                 </td>
             `;
             tbody.appendChild(tr);
@@ -162,6 +172,7 @@ window.addEventListener('DOMContentLoaded', () => {
     if (monthInput) {
         monthInput.addEventListener('change', fetchAndRenderCosts);
     }
+
     // Acción para el botón Ejecutar
     const btnPrecargar = document.getElementById('btn-precargar');
     if (btnPrecargar) {
@@ -197,7 +208,7 @@ window.addEventListener('DOMContentLoaded', () => {
                         });
                         const result = await res.json();
                         if (res.ok) {
-                            alert('Incremento aplicado correctamente. Insertados: ' + (result.insertados ?? 'N/A'));
+                            alert('Incremento aplicado correctamente.');
                             fetchAndRenderCosts(); // refresca la tabla
                         } else {
                             alert('Error: ' + (result.error || 'Error desconocido'));

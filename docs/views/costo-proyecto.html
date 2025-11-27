@@ -12,7 +12,7 @@
 
     <div class="app-container">
         <header class="app-header">
-            <div class="header-left">
+                <div class="header-left">
                 <div class="logo">M</div>
                 <div class="header-dropdown">
                     <div class="dropbtn">
@@ -44,8 +44,7 @@
                         <div class="filter-group" style="margin:0;">
                             <label>Año</label>
                             <select id="filtro-anio" class="input-psa">
-                                <option value="2025">2025</option>
-                                <option value="2024">2024</option>
+                                <option value="">Cargando años...</option>
                             </select>
                         </div>
                     </div>
@@ -233,18 +232,111 @@ function escapeHtml(text) {
         .replace(/'/g, '&#039;');
 }
 
-// Inicializar y escuchar cambios de año
-document.addEventListener('DOMContentLoaded', () => {
+// Obtiene años disponibles: intenta endpoints explícitos y si no existen prueba años recientes.
+async function fetchAvailableYears() {
     const selectYear = document.getElementById('filtro-anio');
-    if (selectYear) {
-        selectYear.addEventListener('change', fetchAndRenderCostosProyecto);
+    if (!selectYear) return;
+
+    try {
+        // 1) intentar endpoints explícitos que podrían devolver un array de años
+        const tryEndpoints = [
+            'https://modulo-finanzas.onrender.com/available-years',
+            'https://modulo-finanzas.onrender.com/years',
+            'https://modulo-finanzas.onrender.com/costos-proyecto/years'
+        ];
+
+        let years = null;
+        for (const url of tryEndpoints) {
+            try {
+                const r = await fetch(url);
+                if (!r.ok) continue;
+                const payload = await r.json();
+                if (Array.isArray(payload) && payload.length > 0) {
+                    years = payload.map(String);
+                    break;
+                }
+            } catch (e) {
+                // continúa con el siguiente endpoint
+            }
+        }
+
+        // 2) fallback: sondear años recientes (actual .. -5)
+        if (!years) {
+            const current = new Date().getFullYear();
+            const yearsSet = new Set();
+            const maxLookback = 5;
+            for (let offset = 0; offset <= maxLookback; offset++) {
+                const y = String(current - offset);
+                try {
+                    const res = await fetch(`https://modulo-finanzas.onrender.com/costos-proyecto?anio=${y}`);
+                    if (!res.ok) continue;
+                    const data = await res.json();
+                    if (!Array.isArray(data) || data.length === 0) continue;
+                    yearsSet.add(y);
+                } catch (e) {
+                    // ignore
+                }
+            }
+            if (yearsSet.size > 0) years = Array.from(yearsSet).sort((a,b)=>Number(b)-Number(a));
+        }
+
+        if (!years || years.length === 0) {
+            console.warn('No se encontraron años disponibles desde la API');
+            return;
+        }
+
+        // Poblar select
+        const previous = selectYear.value;
+        selectYear.innerHTML = '';
+        years.forEach(y => {
+            const opt = document.createElement('option');
+            opt.value = String(y);
+            opt.textContent = String(y);
+            selectYear.appendChild(opt);
+        });
+
+        // Restaurar selección previa si aplica, sino seleccionar el año actual si está, o el primero
+        const currentYear = String(new Date().getFullYear());
+        if (previous && years.includes(previous)) selectYear.value = previous;
+        else if (years.includes(currentYear)) selectYear.value = currentYear;
+        else selectYear.selectedIndex = 0;
+
+    } catch (err) {
+        console.error('fetchAvailableYears error:', err);
     }
+}
+
+// Inicializar y escuchar cambios de año
+    document.addEventListener('DOMContentLoaded', () => {
+    const selectYear = document.getElementById('filtro-anio');
     const btnGenerar = document.getElementById('btn-generar-reporte');
+    const btnReload = document.getElementById('btn-reload-reporte');
     if (btnGenerar) {
         btnGenerar.addEventListener('click', fetchAndRenderCostosProyecto);
     }
-    // Carga inicial
-    fetchAndRenderCostosProyecto();
+    if (btnReload) {
+        btnReload.addEventListener('click', async () => {
+            // simple visual feedback: disable while reloading
+            btnReload.disabled = true;
+            try {
+                await fetchAndRenderCostosProyecto();
+            } finally {
+                btnReload.disabled = false;
+            }
+        });
+    }
+
+    // Cargar años primero (intenta endpoints explícitos, si no existe, prueba años recientes)
+    (async function initYearsThenLoad() {
+        try {
+            await fetchAvailableYears();
+        } catch (e) {
+            console.warn('fetchAvailableYears error:', e);
+        }
+        if (selectYear) selectYear.addEventListener('change', fetchAndRenderCostosProyecto);
+        // Carga inicial ahora que select ya está poblado (o quedó con fallback)
+        fetchAndRenderCostosProyecto();
+    })();
 });
 
     </script>

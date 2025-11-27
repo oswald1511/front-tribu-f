@@ -108,15 +108,9 @@
 </body>
 <script>
     // Permitir editar el costo por hora solo al hacer doble click
-    document.addEventListener('dblclick', function(e) {
-        if (e.target.classList.contains('cost-input-inline')) {
-            e.target.removeAttribute('disabled');
-            e.target.focus();
-        }
-    });
     document.addEventListener('blur', function(e) {
         if (e.target.classList.contains('cost-input-inline')) {
-            e.target.setAttribute('disabled', '');
+            e.target.setAttribute('readonly', '');
         }
     }, true);
     document.addEventListener('keydown', function(e) {
@@ -155,12 +149,18 @@ async function fetchAndRenderCosts() {
                 <td>
                     <div class="input-with-symbol">
                         <span>$</span>
-                        <input type="number" class="cost-input-inline" value="${item.costo_hora}">
+                        <input type="number" readonly class="cost-input-inline" value="${item.costo_hora}">
                     </div>
                 </td>
             `;
             tbody.appendChild(tr);
         });
+        document.addEventListener('dblclick', function(e) {
+            if (e.target.classList.contains('cost-input-inline')) {
+                e.target.removeAttribute('readonly');
+                e.target.focus();
+            }
+    });
     } catch (err) {
         console.error('Error al obtener los costos o roles:', err);
     }

@@ -495,17 +495,28 @@ body {
     transition: all 0.2s ease;
 }
 
-.cost-input-inline:not(:disabled) {
+.cost-input-inline:not(:read-only) {
     background-color: #ffffff;
     border: 1px solid var(--color-header-bg);
     outline: none;
     box-shadow: 0 0 5px rgba(34, 150, 122, 0.2);
 }
 
-.cost-input-inline:disabled {
+.cost-input-inline:read-only {
     color: var(--color-text-dark);
     opacity: 1; /* Necesario para iOS/Safari */
     -webkit-text-fill-color: var(--color-text-dark);
+}
+
+input[type=number]::-webkit-inner-spin-button,
+input[type=number]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+/* Para Firefox */
+input[type=number] {
+    -moz-appearance: textfield;
 }
 
 .btn-icon-action {

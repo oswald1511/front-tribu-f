@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Costo por Rol - Gestión PSA</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/plugins/monthSelect/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="../styles/style.css">
+</head>
+<body>
+
+    <div class="app-container">
+        <header class="app-header">
+            <div class="header-left">
+                <div class="logo">M</div>
+                <div class="header-dropdown">
+                    <div class="dropbtn">
+                        Finanzas <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="dropdown-content">
+                        <a href="carga-horas.html">Carga de Horas</a>
+                        <a href="finanzas.html" style="font-weight:bold; color:var(--color-header-bg);">Finanzas</a>
+                    </div>
+                </div>
+            </div>
+            <div class="header-right"><span class="logo-psa">PSA</span></div>
+        </header>
+
+        <main class="main-content">
+            <div id="modulo-finanzas-content">
+                
+                <div class="sub-nav-container">
+                    <nav class="nav-switch">
+                        <a href="finanzas.html" class="nav-switch-item">Costo por proyecto</a>
+                        <a href="#" class="nav-switch-item active">Costo por Rol</a>
+                    </nav>
+                </div>
+
+                <div class="finance-view active">
+                    <h1 class="page-title">Gestión de Costos por Rol</h1>
+                    
+                    <section class="filters" style="background: #e0f0eb; padding: 20px; border-radius: 12px; margin-bottom: 25px; border: 1px solid var(--color-excel-border);">
+    
+                        <div class="precarga-wrapper">
+                            
+                            <div class="precarga-title">
+                                <i class="fas fa-sync-alt"></i> Precarga
+                            </div>
+                            
+                            <div class="filter-group">
+                                <label for="mes-origen">Mes Origen</label>
+                                <input type="month" id="mes-origen" class="input-psa" value="2025-11">
+                            </div>
+                            
+                            <div class="filter-group">
+                                <label for="mes-destino">Mes Destino</label>
+                                <input type="month" id="mes-destino" class="input-psa" value="2025-12">
+                            </div>
+
+                            <div class="filter-group filter-group-centered">
+                                <label for="porcentaje-aumento">% Aumento</label>
+                                <input type="number" id="porcentaje-aumento" class="input-psa input-psa-sm" value="5">
+                            </div>
+
+                            <button id="btn-precargar" class="btn-preload" style="margin-top: 14px;">
+                                Ejecutar
+                            </button>
+                        </div>
+                    </section>
+
+                    <section class="actions">
+                        <div class="filter-group">
+                            <label for="filtro-mes-tabla">Filtrar Mes Visualizado</label>
+                            <input type="month" id="filtro-mes-tabla" class="input-psa" value="2025-12">
+                        </div>
+                        <button class="btn-preload" id="btn-guardar-cambios">
+                            <i class="fas fa-save"></i> Guardar Cambios
+                        </button>
+                    </section>
+
+                    <div class="project-grid-container">
+                        <div class="excel-grid-wrapper">
+                            <table class="costs-table"> 
+                                <thead>
+                                    <tr>
+                                        <th>Rol</th>
+                                        <th>Costo Hora Actual</th>
+                                        <th style="text-align: center; width: 100px;">Acciones</th> </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>Desarrollador Senior</td>
+                                        <td>
+                                            <div class="input-with-symbol">
+                                                <span>$</span>
+                                                <input type="number" class="cost-input-inline" value="50.0" disabled>
+                                            </div>
+                                        </td>
+                                        <td style="text-align: center;">
+                                            <button class="btn-icon-action" title="Modificar Costo">
+                                                <i class="fas fa-pencil-alt"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+
+                                    <tr>
+                                        <td>Arquitecto Fantasma</td>
+                                        <td>
+                                            <div class="input-with-symbol">
+                                                <span>$</span>
+                                                <input type="number" class="cost-input-inline" value="0.0" disabled>
+                                            </div>
+                                        </td>
+                                        <td style="text-align: center;">
+                                            <button class="btn-icon-action" title="Modificar Costo">
+                                                <i class="fas fa-pencil-alt"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                
+            </div>
+        </main>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/es.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/plugins/monthSelect/index.js"></script>
+
+    <script src="../scripts/script.js"></script>
+</body>
+</html>

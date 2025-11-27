@@ -686,3 +686,177 @@ select.input-psa {
     color: var(--color-text-select);
     cursor: pointer;
 }
+
+/* --- ESTILOS DEL NUEVO BOTÓN Y MODAL --- */
+
+/* Ajuste del botón para el círculo */
+#btn-abrir-modal {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding-right: 8px; /* Menos padding a la derecha para pegar el círculo */
+}
+
+/* El círculo blanco con el más verde */
+.icon-circle {
+    background-color: #ffffff;
+    color: var(--color-header-bg); /* El verde PSA */
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.8rem;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+/* --- ESTILOS DEL MODAL (POP UP) --- */
+.modal-overlay {
+    display: none; /* Oculto por defecto */
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.5); /* Fondo oscuro semitransparente */
+    backdrop-filter: blur(2px);
+    align-items: center;
+    justify-content: center;
+    animation: fadeIn 0.3s;
+}
+
+.modal-content {
+    background-color: #fff;
+    padding: 25px;
+    border-radius: 15px;
+    width: 90%;
+    max-width: 450px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+    border: 1px solid var(--color-grid-lines);
+    animation: slideDown 0.3s;
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    border-bottom: 1px solid var(--color-grid-lines);
+    padding-bottom: 10px;
+}
+
+.modal-header h2 {
+    color: var(--color-header-bg);
+    margin: 0;
+    font-size: 1.4rem;
+}
+
+.close-modal {
+    color: #aaa;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: color 0.2s;
+}
+
+.close-modal:hover {
+    color: var(--color-text-dark);
+}
+
+.modal-body .filter-group {
+    margin-bottom: 15px;
+}
+
+.modal-footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 15px;
+    margin-top: 25px;
+}
+
+.btn-cancelar {
+    background: transparent;
+    border: 2px solid #ccc;
+    color: #666;
+    padding: 10px 20px;
+    border-radius: 50px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.btn-cancelar:hover {
+    border-color: #999;
+    color: #333;
+}
+
+/* Animaciones */
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+@keyframes slideDown { from { transform: translateY(-20px); } to { transform: translateY(0); } }
+
+/* Asegurar que el modal se muestre flex cuando está activo */
+.modal-overlay.show {
+    display: flex;
+}
+
+
+
+/* --- VALIDACIONES Y CORRECCIONES ESTÉTICAS --- */
+
+/* 1. Quitar las flechas (spinners) de los inputs tipo número para que se vean iguales a los de texto */
+input[type=number]::-webkit-inner-spin-button, 
+input[type=number]::-webkit-outer-spin-button { 
+  -webkit-appearance: none; 
+  margin: 0; 
+}
+input[type=number] {
+  -moz-appearance: textfield; /* Para Firefox */
+}
+
+/* 2. Estilo para campo inválido (Borde Rojo) */
+.input-psa.input-error {
+    border-color: #e74c3c !important;
+    box-shadow: 0 0 0 3px rgba(231, 76, 60, 0.15) !important;
+    background-color: #fff5f5;
+}
+
+/* --- ESTILOS DEL CHIP (NOTIFICACIÓN) --- */
+.toast-chip {
+    visibility: hidden; /* Oculto por defecto */
+    min-width: 250px;
+    background-color: var(--color-header-bg); /* Verde PSA */
+    color: #fff;
+    text-align: center;
+    border-radius: 50px; /* Bordes totalmente redondos */
+    padding: 16px 24px;
+    position: fixed;
+    z-index: 2000; /* Por encima de todo, incluso el modal */
+    left: 50%;
+    bottom: 30px; /* Posición inicial */
+    transform: translateX(-50%); /* Centrado horizontal exacto */
+    font-weight: 600;
+    font-size: 1rem;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+    opacity: 0;
+    transition: all 0.5s ease-in-out;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+}
+
+/* Clase para mostrar el chip */
+.toast-chip.show {
+    visibility: visible;
+    opacity: 1;
+    bottom: 50px; /* Pequeña animación hacia arriba */
+}
+
+/* Asegurarnos que el estilo de error siga funcionando */
+.input-psa.input-error {
+    border-color: #e74c3c !important;
+    background-color: #fff5f5;
+    box-shadow: 0 0 0 3px rgba(231, 76, 60, 0.2);
+}

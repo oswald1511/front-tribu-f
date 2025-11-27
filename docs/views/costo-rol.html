@@ -77,10 +77,47 @@
                             <label for="filtro-mes-tabla">Filtrar Mes Visualizado</label>
                             <input type="month" id="filtro-mes-tabla" class="input-psa" value="2025-12">
                         </div>
-                        <button class="btn-preload" id="btn-guardar-cambios">
-                            <i class="fas fa-save"></i> Guardar Cambios
+                        
+                        <button class="btn-preload" id="btn-abrir-modal">
+                            Costo Hora 
+                            <span class="icon-circle">
+                                <i class="fas fa-plus"></i>
+                            </span>
                         </button>
                     </section>
+
+                    <div id="modal-nuevo-costo" class="modal-overlay">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h2>Nuevo Costo por Rol</h2>
+                                <span class="close-modal">&times;</span>
+                            </div>
+                            <div class="modal-body">
+                                <form id="form-nuevo-costo" novalidate> <div class="filter-group" style="width: 100%;">
+                                        <label for="modal-rol">Rol</label>
+                                        <select id="modal-rol" class="input-psa">
+                                            <option value="">Cargando roles...</option>
+                                        </select>
+                                    </div>
+
+                                    <div class="filter-group" style="width: 100%;">
+                                        <label for="modal-mes">Mes / Año</label>
+                                        <input type="month" id="modal-mes" class="input-psa">
+                                    </div>
+
+                                    <div class="filter-group" style="width: 100%;">
+                                        <label for="modal-costo">Costo Hora ($)</label>
+                                        <input type="number" id="modal-costo" class="input-psa" placeholder="Ej: 4500">
+                                    </div>
+
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn-cancelar">Cancelar</button>
+                                        <button type="submit" class="btn-preload">Guardar</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
 
                     <div class="project-grid-container">
                         <div class="excel-grid-wrapper">
@@ -102,6 +139,10 @@
         </main>
     </div>
 
+    <div id="toast-confirmacion" class="toast-chip">
+        <i class="fas fa-check-circle"></i> Costo cargado correctamente
+    </div>
+
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
     <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/es.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/plugins/monthSelect/index.js"></script>
@@ -115,19 +156,18 @@ async function fetchAndRenderCosts() {
     const visualizedKey = monthInput.value.trim();
 
     try {
-        // Fetch costos por rol
         const res = await fetch('https://modulo-finanzas.onrender.com/costos-rol');
         const data = await res.json();
-        // Fetch roles info
         const resRoles = await fetch('https://corsproxy.io/?https://anypoint.mulesoft.com/mocking/api/v1/sources/exchange/assets/32c8fe38-22a6-4fbb-b461-170dfac937e4/roles-api/1.0.0/m/roles');
         const roles = await resRoles.json();
 
-        // Filtra por mes en formato 'YYYY-MM'
-        const filtered = data.filter(item => {
-            return item.mes === visualizedKey;
-        });
+        // Guardamos los roles globalmente para usarlos en el modal
+        window.rolesData = roles;
+
+        const filtered = data.filter(item => item.mes === visualizedKey);
         const tbody = document.getElementById('costs-table-body');
         tbody.innerHTML = '';
+        
         filtered.forEach(item => {
             const rolInfo = roles.find(r => r.id === item.rol_id);
             let rolDisplay = item.rol_id;
@@ -155,58 +195,196 @@ async function fetchAndRenderCosts() {
         console.error('Error al obtener los costos o roles:', err);
     }
 }
-// Ejecuta al cargar la página
+
+// Lógica del Modal
+// REEMPLAZA TU FUNCIÓN setupModal() POR ESTA VERSIÓN CORREGIDA:
+
+function setupModal() {
+    const modal = document.getElementById('modal-nuevo-costo');
+    const btnAbrir = document.getElementById('btn-abrir-modal');
+    const btnCerrar = document.querySelector('.close-modal');
+    const btnCancelar = document.querySelector('.btn-cancelar');
+    const form = document.getElementById('form-nuevo-costo');
+    const toast = document.getElementById('toast-confirmacion');
+
+    // Elementos del formulario
+    const selectRol = document.getElementById('modal-rol');
+    const inputMes = document.getElementById('modal-mes');
+    const inputCosto = document.getElementById('modal-costo');
+
+    function mostrarChip() {
+        toast.className = "toast-chip show"; 
+        setTimeout(function(){ 
+            toast.className = toast.className.replace("show", ""); 
+        }, 3000);
+    }
+
+    function limpiarError(e) {
+        if (e.target.classList.contains('input-error')) {
+            e.target.classList.remove('input-error');
+        }
+        if (e.target === inputMes && inputMes.nextElementSibling) {
+            inputMes.nextElementSibling.classList.remove('input-error');
+        }
+    }
+
+    selectRol.addEventListener('change', limpiarError);
+    inputCosto.addEventListener('input', limpiarError);
+
+    // --- ABRIR MODAL ---
+    btnAbrir.addEventListener('click', () => {
+        // 1. PRIMERO: Reseteamos el formulario y limpiamos errores visuales
+        form.reset();
+        selectRol.classList.remove('input-error');
+        inputCosto.classList.remove('input-error');
+        if(inputMes.nextElementSibling) inputMes.nextElementSibling.classList.remove('input-error');
+
+        // 2. ABRIMOS el modal
+        modal.classList.add('show');
+        
+        // 3. CARGAMOS LOS ROLES
+        selectRol.innerHTML = '<option value="">Seleccionar Rol...</option>';
+        if (window.rolesData) {
+            window.rolesData.forEach(rol => {
+                const option = document.createElement('option');
+                option.value = rol.id;
+                option.text = `${rol.nombre} (${rol.experiencia})`;
+                selectRol.appendChild(option);
+            });
+        }
+        
+        // 4. CONFIGURAMOS FLATPICKR (Ahora que el form está limpio, la fecha se quedará)
+        if (inputMes._flatpickr) {
+            inputMes._flatpickr.destroy();
+        }
+
+        flatpickr("#modal-mes", {
+            locale: "es",
+            plugins: [new monthSelectPlugin({ shorthand: true, dateFormat: "Y-m", altFormat: "F Y" })],
+            altInput: true,
+            altInputClass: "input-psa", 
+            static: true, 
+            defaultDate: new Date(), // <--- ESTO AHORA SÍ FUNCIONARÁ (Pondrá Noviembre 2025)
+            disableMobile: true,     // Fuerza a usar el calendario de estilo plugin siempre
+            onChange: function(selectedDates, dateStr, instance) {
+                if(instance.altInput) instance.altInput.classList.remove('input-error');
+            }
+        });
+    });
+
+    // --- CERRAR MODAL ---
+    const closeModal = () => modal.classList.remove('show');
+    btnCerrar.addEventListener('click', closeModal);
+    btnCancelar.addEventListener('click', closeModal);
+    window.addEventListener('click', (e) => {
+        if (e.target === modal) closeModal();
+    });
+
+    // --- GUARDAR ---
+    form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        
+        const valRol = selectRol.value;
+        const valMes = inputMes.value;
+        const valCosto = inputCosto.value;
+
+        let hayError = false;
+
+        if (!valRol) {
+            selectRol.classList.add('input-error');
+            hayError = true;
+        }
+
+        if (!valMes) {
+            if(inputMes.nextElementSibling) inputMes.nextElementSibling.classList.add('input-error');
+            hayError = true;
+        }
+
+        if (!valCosto || parseFloat(valCosto) <= 0) {
+            inputCosto.classList.add('input-error');
+            hayError = true;
+        }
+
+        if (hayError) return;
+
+        const nuevoDato = {
+            rol_id: parseInt(valRol),
+            mes: valMes,
+            costo_hora: parseFloat(valCosto),
+            moneda: "ARS"
+        };
+
+        try {
+            const res = await fetch('https://modulo-finanzas.onrender.com/costos-rol', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(nuevoDato)
+            });
+
+            if (res.ok) {
+                closeModal();
+                mostrarChip();
+                fetchAndRenderCosts(); 
+            } else {
+                // LEER EL ERROR REAL DEL SERVIDOR
+                try {
+                    const errorData = await res.json();
+                    const mensaje = errorData.message || errorData.error || JSON.stringify(errorData);
+                    alert('No se pudo guardar: ' + mensaje);
+                } catch (e) {
+                    // Si el servidor no devolvió JSON (ej: error 500 puro)
+                    const texto = await res.text();
+                    alert('Error del servidor: ' + (texto || res.statusText));
+                }
+            }
+        } catch (error) {
+            console.error(error);
+            alert('Error de conexión');
+        }
+    });
+}
+
+
+
+
 window.addEventListener('DOMContentLoaded', () => {
     fetchAndRenderCosts();
+    setupModal();
+
     const monthInput = document.getElementById('filtro-mes-tabla');
     if (monthInput) {
         monthInput.addEventListener('change', fetchAndRenderCosts);
     }
-    // Acción para el botón Ejecutar
+    
+    // Lógica Precarga (existente)
     const btnPrecargar = document.getElementById('btn-precargar');
     if (btnPrecargar) {
-            btnPrecargar.addEventListener('click', function () {
-                (async function() {
-                    const mesOrigen = document.getElementById('mes-origen')?.value;
-                    const mesDestino = document.getElementById('mes-destino')?.value;
-                    const porcentaje = document.getElementById('porcentaje-aumento')?.value;
-                    if (!mesOrigen || !mesDestino || porcentaje === undefined) {
-                        alert('Faltan campos: mes origen, mes destino y porcentaje son requeridos.');
-                        return;
-                    }
-                    // Verificar si el mes destino ya tiene filas
-                    try {
-                        const resCheck = await fetch('https://modulo-finanzas.onrender.com/costos-rol');
-                        const dataCheck = await resCheck.json();
-                        const filasDestino = dataCheck.filter(item => item.mes === mesDestino);
-                        if (filasDestino.length > 0) {
-                            alert('No se puede aplicar el incremento porque el mes destino ya tiene al menos una fila registrada.');
-                            return;
-                        }
-                        // Si no existe, enviar el POST normalmente
-                        const res = await fetch('https://modulo-finanzas.onrender.com/costos-rol/incremento', {
-                            method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/json'
-                            },
-                            body: JSON.stringify({
-                                mes_origen: mesOrigen,
-                                mes_destino: mesDestino,
-                                porcentaje: parseFloat(porcentaje)
-                            })
-                        });
-                        const result = await res.json();
-                        if (res.ok) {
-                            alert('Incremento aplicado correctamente. Insertados: ' + (result.insertados ?? 'N/A'));
-                            fetchAndRenderCosts(); // refresca la tabla
-                        } else {
-                            alert('Error: ' + (result.error || 'Error desconocido'));
-                        }
-                    } catch (err) {
-                        alert('Error de red o servidor: ' + err);
-                    }
-                })();
-            });
+        btnPrecargar.addEventListener('click', async function () {
+            const mesOrigen = document.getElementById('mes-origen')?.value;
+            const mesDestino = document.getElementById('mes-destino')?.value;
+            const porcentaje = document.getElementById('porcentaje-aumento')?.value;
+            if (!mesOrigen || !mesDestino || porcentaje === undefined) {
+                alert('Faltan campos para la precarga.');
+                return;
+            }
+            try {
+                const res = await fetch('https://modulo-finanzas.onrender.com/costos-rol/incremento', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        mes_origen: mesOrigen,
+                        mes_destino: mesDestino,
+                        porcentaje: parseFloat(porcentaje)
+                    })
+                });
+                if (res.ok) {
+                    alert('Incremento aplicado correctamente.');
+                    fetchAndRenderCosts();
+                } else {
+                    alert('Error en precarga.');
+                }
+            } catch (err) { alert('Error: ' + err); }
+        });
     }
 });
 </script>

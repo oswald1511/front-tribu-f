@@ -384,14 +384,17 @@ body {
     justify-content: center;
 }
 
+/* En style.css busca y modifica esta clase */
+
 .excel-grid-wrapper {
     width: 100%;
     max-width: 100%;
-    overflow-x: auto; /* Scroll horizontal si es necesario en móviles */
-    border-radius: 8px;
-    border: 1px solid var(--color-excel-border);
-    background-color: #fff;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.05); /* Sombra suave para estética */
+    overflow-x: auto;
+    
+    /* --- CAMBIOS AQUÍ --- */
+    background-color: transparent; /* Antes era #fff (blanco) */
+    border: none;                  /* Antes tenía borde gris */
+    box-shadow: none;              /* Quitamos la sombra del contenedor */
 }
 
 /* 2. ESTRUCTURA DE LA TABLA */
@@ -474,4 +477,215 @@ body {
 .finance-view.active {
     display: block;
     animation: fadeIn 0.3s ease-in-out;
+}
+
+
+/* --- NUEVOS ESTILOS PARA EDICIÓN EN LÍNEA (Tabla Costos) --- */
+
+/* Contenedor para el símbolo $ y el input */
+.input-with-symbol {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-weight: 700;
+    color: var(--color-text-dark);
+}
+
+/* El input que parece texto cuando está deshabilitado */
+.cost-input-inline {
+    background: transparent;
+    border: 1px solid transparent; /* Invisible por defecto */
+    font-size: 1rem;
+    font-family: inherit;
+    font-weight: inherit;
+    color: inherit;
+    width: 80px;
+    padding: 4px 8px;
+    border-radius: 4px;
+    transition: all 0.2s ease;
+}
+
+/* Cuando el input está habilitado (listo para escribir) */
+.cost-input-inline:not(:disabled) {
+    background-color: #ffffff;
+    border: 1px solid var(--color-header-bg);
+    outline: none;
+    box-shadow: 0 0 5px rgba(34, 150, 122, 0.2);
+}
+
+/* Estilo para inputs deshabilitados (quita el fondo gris default del navegador) */
+.cost-input-inline:disabled {
+    color: var(--color-text-dark);
+    opacity: 1; /* Necesario para iOS/Safari */
+    -webkit-text-fill-color: var(--color-text-dark);
+}
+
+/* --- Botón de Acción (Lápiz) --- */
+.btn-icon-action {
+    background: transparent;
+    border: none;
+    color: var(--color-header-bg); /* Color verde del tema */
+    font-size: 1.1rem;
+    cursor: pointer;
+    padding: 8px;
+    border-radius: 50%;
+    transition: background-color 0.2s, transform 0.2s;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.btn-icon-action:hover {
+    background-color: rgba(34, 150, 122, 0.1); /* Fondo verde suave */
+    transform: scale(1.1);
+}
+
+.btn-icon-action:active {
+    transform: scale(0.95);
+}
+
+/* --- NUEVOS ESTILOS PARA CONTROLES DE FECHA Y NÚMERO --- */
+
+/* Estilo base para inputs de control (Meses y Porcentajes) */
+.input-psa {
+    background-color: #ffffff;
+    color: var(--color-text-select); /* El verde del texto */
+    border: 2px solid var(--color-select-border); /* El borde verde */
+    border-radius: 50px; /* Bordes muy redondeados */
+    padding: 10px 15px;
+    font-size: 0.95rem;
+    font-weight: 700;
+    outline: none;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    font-family: inherit;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+}
+
+/* Estado Focus (cuando haces clic) */
+.input-psa:focus {
+    background-color: #f9fbfb;
+    box-shadow: 0 0 0 4px rgba(34, 150, 122, 0.2); /* Halo verde suave */
+    border-color: var(--color-header-bg);
+}
+
+/* Ajuste específico para inputs de tipo mes (el ícono del calendario) */
+.input-psa[type="month"] {
+    min-width: 160px;
+    /* Esto alinea mejor el texto y el icono en algunos navegadores */
+    display: inline-flex;
+    align-items: center;
+}
+
+/* Ajuste específico para inputs de número pequeños (% Aumento) */
+.input-psa-sm {
+    width: 90px;
+    text-align: center;
+    padding-right: 5px; /* Ajuste visual para el número */
+}
+
+/* Etiquetas (Labels) más bonitas */
+.filter-group label {
+    font-weight: 600;
+    font-size: 0.85rem;
+    color: var(--color-header-bg); /* Verde en lugar de gris */
+    margin-bottom: 6px;
+    margin-left: 10px; /* Para alinearse con la curva del input */
+    display: block;
+}
+
+/* --- CORRECCIONES BARRA PRECARGA --- */
+
+/* Contenedor flexible mejorado */
+.precarga-wrapper {
+    display: flex;
+    align-items: center; /* Esto centra verticalmente el Título respecto a todo el bloque */
+    gap: 20px;
+    flex-wrap: wrap;
+}
+
+/* El título ahora tiene su propio estilo para asegurarnos que se vea bien */
+.precarga-title {
+    margin: 0;
+    color: var(--color-header-bg);
+    font-size: 1.1rem;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    /* Un pequeño margen superior compensa visualmente la altura de los labels de al lado */
+    margin-top: 12px; 
+}
+
+/* Clase especial para inputs pequeños (% Aumento) */
+.filter-group-centered {
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* Centra horizontalmente el label y el input */
+}
+
+/* Quitamos el margen izquierdo global SOLO para estos grupos centrados */
+.filter-group-centered label {
+    margin-left: 0 !important; 
+    text-align: center;
+    width: 100%;
+}
+
+/* --- PERSONALIZACIÓN DE FLATPICKR (CALENDARIOS) --- */
+
+/* Color principal del calendario (Fondo de cabecera y selección) */
+.flatpickr-calendar .flatpickr-months .flatpickr-month,
+.flatpickr-calendar .flatpickr-weekdays,
+.flatpickr-day.selected, 
+.flatpickr-day.startRange, 
+.flatpickr-day.endRange, 
+.flatpickr-day.selected.inRange, 
+.flatpickr-day.startRange.inRange, 
+.flatpickr-day.endRange.inRange, 
+.flatpickr-day.selected:focus, 
+.flatpickr-day.startRange:focus, 
+.flatpickr-day.endRange:focus, 
+.flatpickr-day.selected:hover, 
+.flatpickr-day.startRange:hover, 
+.flatpickr-day.endRange:hover, 
+.flatpickr-day.selected.prevMonthDay, 
+.flatpickr-day.startRange.prevMonthDay, 
+.flatpickr-day.endRange.prevMonthDay, 
+.flatpickr-day.selected.nextMonthDay, 
+.flatpickr-day.startRange.nextMonthDay, 
+.flatpickr-day.endRange.nextMonthDay {
+    background: var(--color-header-bg) !important;
+    border-color: var(--color-header-bg) !important;
+    color: #fff;
+    fill: #fff;
+}
+
+/* Color de los meses al hacer hover (Plugin de meses) */
+.flatpickr-monthSelect-month.selected {
+    background: var(--color-header-bg) !important;
+    border-color: var(--color-header-bg) !important;
+}
+
+/* Quitar bordes feos y sombras excesivas */
+.flatpickr-calendar {
+    box-shadow: 0 10px 25px rgba(0,0,0,0.15) !important;
+    border: none !important;
+    border-radius: 12px !important;
+}
+
+/* Flechas de navegación */
+.flatpickr-months .flatpickr-prev-month svg, 
+.flatpickr-months .flatpickr-next-month svg {
+    fill: #fff !important;
+}
+
+/* Ajuste para que el input generado se vea igual a tus .input-psa */
+.flatpickr-input {
+    background-color: #ffffff;
+    border: 2px solid var(--color-select-border);
+    border-radius: 50px;
+    padding: 10px 15px;
+    font-weight: 700;
+    color: var(--color-text-select);
+    cursor: pointer;
 }

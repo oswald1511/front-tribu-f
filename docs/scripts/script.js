@@ -36,5 +36,25 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    // NOTA: La lógica de tabs se eliminó porque ahora son páginas separadas.
+    // 1. Configuración para inputs de solo FECHA (ej: Carga de Horas)
+    flatpickr("input[type='date']", {
+        locale: "es",           // Idioma español
+        dateFormat: "Y-m-d",    // Formato para enviar al backend
+        altInput: true,         // Muestra una fecha más legible al usuario
+        altFormat: "j F, Y",    // Ej: "15 Noviembre, 2025"
+        allowInput: true        // Permite escribir si se desea
+    });
+
+    // 2. Configuración para inputs de MES (ej: Precarga, Costos)
+    flatpickr("input[type='month']", {
+        locale: "es",
+        plugins: [
+            new monthSelectPlugin({
+                shorthand: true, // Muestra "Ene", "Feb" en vez de "Enero"
+                dateFormat: "Y-m", // Formato YYYY-MM para el backend
+                altFormat: "F Y",  // Ej: "Noviembre 2025" visualmente
+            })
+        ],
+        altInput: true
+    });
 });

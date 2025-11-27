@@ -162,6 +162,52 @@ window.addEventListener('DOMContentLoaded', () => {
     if (monthInput) {
         monthInput.addEventListener('change', fetchAndRenderCosts);
     }
+    // Acción para el botón Ejecutar
+    const btnPrecargar = document.getElementById('btn-precargar');
+    if (btnPrecargar) {
+            btnPrecargar.addEventListener('click', function () {
+                (async function() {
+                    const mesOrigen = document.getElementById('mes-origen')?.value;
+                    const mesDestino = document.getElementById('mes-destino')?.value;
+                    const porcentaje = document.getElementById('porcentaje-aumento')?.value;
+                    if (!mesOrigen || !mesDestino || porcentaje === undefined) {
+                        alert('Faltan campos: mes origen, mes destino y porcentaje son requeridos.');
+                        return;
+                    }
+                    // Verificar si el mes destino ya tiene filas
+                    try {
+                        const resCheck = await fetch('https://modulo-finanzas.onrender.com/costos-rol');
+                        const dataCheck = await resCheck.json();
+                        const filasDestino = dataCheck.filter(item => item.mes === mesDestino);
+                        if (filasDestino.length > 0) {
+                            alert('No se puede aplicar el incremento porque el mes destino ya tiene al menos una fila registrada.');
+                            return;
+                        }
+                        // Si no existe, enviar el POST normalmente
+                        const res = await fetch('https://modulo-finanzas.onrender.com/costos-rol/incremento', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify({
+                                mes_origen: mesOrigen,
+                                mes_destino: mesDestino,
+                                porcentaje: parseFloat(porcentaje)
+                            })
+                        });
+                        const result = await res.json();
+                        if (res.ok) {
+                            alert('Incremento aplicado correctamente. Insertados: ' + (result.insertados ?? 'N/A'));
+                            fetchAndRenderCosts(); // refresca la tabla
+                        } else {
+                            alert('Error: ' + (result.error || 'Error desconocido'));
+                        }
+                    } catch (err) {
+                        alert('Error de red o servidor: ' + err);
+                    }
+                })();
+            });
+    }
 });
 </script>
 </html>

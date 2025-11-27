@@ -164,7 +164,14 @@
 
 async function fetchAndRenderCostosProyecto() {
     const selectYear = document.getElementById('filtro-anio');
-    const year = selectYear ? selectYear.value : new Date().getFullYear();
+    const year = selectYear ? selectYear.value : '';
+
+    // If a year select exists, require selection (do not auto-default)
+    if (selectYear && (!year || year.trim() === '')) {
+        const tableBody = document.querySelector('.excel-grid tbody');
+        if (tableBody) tableBody.innerHTML = '<tr><td colspan="14" style="color:#666;">Seleccione un año para generar el reporte.</td></tr>';
+        return;
+    }
 
     const tableBody = document.querySelector('.excel-grid tbody');
     if (!tableBody) return;
@@ -238,56 +245,64 @@ async function fetchAvailableYears() {
     if (!selectYear) return;
 
     try {
-        // 1) intentar endpoints explícitos que podrían devolver un array de años
-        const tryEndpoints = [
-            'https://modulo-finanzas.onrender.com/available-years',
-            'https://modulo-finanzas.onrender.com/years',
-            'https://modulo-finanzas.onrender.com/costos-proyecto/years'
-        ];
+        // Obtener años desde backend-carga-horas. Si falla (CORS), intentar via corsproxy.
+        let payload = null;
+        try {
+            const res = await fetch('https://backend-carga-horas.onrender.com/proyecto-recurso-mes');
+            if (res.ok) {
+                payload = await res.json();
+            } else {
+                console.warn('backend-carga-horas responded', res.status, 'trying proxy...');
+            }
+        } catch (err) {
+            console.warn('Direct fetch to backend-carga-horas failed, trying proxy...', err);
+        }
 
-        let years = null;
-        for (const url of tryEndpoints) {
+        if (!payload) {
             try {
-                const r = await fetch(url);
-                if (!r.ok) continue;
-                const payload = await r.json();
-                if (Array.isArray(payload) && payload.length > 0) {
-                    years = payload.map(String);
-                    break;
-                }
-            } catch (e) {
-                // continúa con el siguiente endpoint
+                const proxyUrl = 'https://corsproxy.io/?https://backend-carga-horas.onrender.com/proyecto-recurso-mes';
+                const pr = await fetch(proxyUrl);
+                if (pr.ok) payload = await pr.json();
+                else console.warn('Proxy fetch failed', pr.status);
+            } catch (err) {
+                console.warn('Proxy fetch to backend-carga-horas failed', err);
             }
         }
 
-        // 2) fallback: sondear años recientes (actual .. -5)
-        if (!years) {
-            const current = new Date().getFullYear();
-            const yearsSet = new Set();
-            const maxLookback = 5;
-            for (let offset = 0; offset <= maxLookback; offset++) {
-                const y = String(current - offset);
-                try {
-                    const res = await fetch(`https://modulo-finanzas.onrender.com/costos-proyecto?anio=${y}`);
-                    if (!res.ok) continue;
-                    const data = await res.json();
-                    if (!Array.isArray(data) || data.length === 0) continue;
-                    yearsSet.add(y);
-                } catch (e) {
-                    // ignore
-                }
-            }
-            if (yearsSet.size > 0) years = Array.from(yearsSet).sort((a,b)=>Number(b)-Number(a));
+        if (!payload) {
+            console.warn('No se pudo obtener datos de proyecto-recurso-mes ni por proxy. Mostrar mensaje en UI.');
+            selectYear.innerHTML = '';
+            const opt = document.createElement('option');
+            opt.value = '';
+            opt.textContent = 'No se pudieron cargar años (CORS)';
+            selectYear.appendChild(opt);
+            return;
         }
-
-        if (!years || years.length === 0) {
-            console.warn('No se encontraron años disponibles desde la API');
+        if (!Array.isArray(payload) || payload.length === 0) {
+            console.warn('Respuesta vacía de proyecto-recurso-mes');
             return;
         }
 
-        // Poblar select
+        // Extraer años únicos desde anioMes (formato YYYY-MM)
+        const yearsSet = new Set();
+        payload.forEach(item => {
+            const m = (item.anioMes || '').match(/^(\d{4})-\d{2}$/);
+            if (m) yearsSet.add(m[1]);
+        });
+
+        const years = Array.from(yearsSet).sort((a,b) => Number(b) - Number(a));
+        if (years.length === 0) {
+            console.warn('No se extrajeron años válidos de proyecto-recurso-mes');
+            return;
+        }
+
+        // Poblar select con opción inicial 'Seleccionar año'
         const previous = selectYear.value;
         selectYear.innerHTML = '';
+        const placeholder = document.createElement('option');
+        placeholder.value = '';
+        placeholder.textContent = 'Seleccionar año';
+        selectYear.appendChild(placeholder);
         years.forEach(y => {
             const opt = document.createElement('option');
             opt.value = String(y);
@@ -295,11 +310,22 @@ async function fetchAvailableYears() {
             selectYear.appendChild(opt);
         });
 
-        // Restaurar selección previa si aplica, sino seleccionar el año actual si está, o el primero
-        const currentYear = String(new Date().getFullYear());
+        // Restaurar selección previa si aplica
         if (previous && years.includes(previous)) selectYear.value = previous;
-        else if (years.includes(currentYear)) selectYear.value = currentYear;
-        else selectYear.selectedIndex = 0;
+        else selectYear.value = '';
+
+        // Deshabilitar botones hasta que el usuario seleccione un año
+        const btnGenerar = document.getElementById('btn-generar-reporte');
+        const btnReload = document.getElementById('btn-reload-reporte');
+        if (btnGenerar) btnGenerar.disabled = true;
+        if (btnReload) btnReload.disabled = true;
+
+        // Cuando el usuario seleccione un año, habilitar botones
+        selectYear.addEventListener('change', () => {
+            const val = selectYear.value;
+            if (btnGenerar) btnGenerar.disabled = !val;
+            if (btnReload) btnReload.disabled = !val;
+        });
 
     } catch (err) {
         console.error('fetchAvailableYears error:', err);

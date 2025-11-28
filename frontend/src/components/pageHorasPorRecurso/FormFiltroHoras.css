@@ -1,0 +1,54 @@
+.title {
+  font-size: 32px;
+  margin-bottom: 10px;
+}
+
+.titlespace {
+  font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+.form-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  width: 100%;
+  background: #bfbfbf;
+  padding: 15px;
+  max-width: 1420px;
+}
+
+.form-row {
+  display: flex;
+  align-items: center;
+  gap: 40px;
+}
+
+.input-text {
+  border: 1px solid #ccc;
+  padding: 8px;
+  border-radius: 6px;
+  font-size: 15px;
+}
+
+.fila-superior {
+  margin-bottom: 10px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  min-width: 300px;
+}
+
+.btn-cargar {
+  background: #8fb4e9;
+  border: none;
+  padding: 10px 22px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+.btn-cargar:hover {
+  background: #7da7e3;
+}

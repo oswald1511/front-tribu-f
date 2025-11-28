@@ -1,0 +1,98 @@
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.35);
+  backdrop-filter: blur(2px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 999;
+}
+
+/* Caja */
+.modal-content {
+  position: relative;
+  background: #fff;
+  padding: 28px 30px;
+  border-radius: 16px;
+  width: 420px;
+  max-width: 90%;
+  box-shadow: 0px 5px 25px rgba(0, 0, 0, 0.22);
+  font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+/* Título */
+.modal-title {
+  font-size: 26px;
+  font-weight: 700;
+  margin-bottom: 20px;
+}
+
+/* Botón cerrar */
+.close-button {
+  position: absolute;
+  top: 12px;
+  right: 14px;
+  background: #e6f4ec;
+  border: none;
+  width: 28px;
+  height: 28px;
+  border-radius: 6px;
+  font-size: 20px;
+  font-weight: bold;
+  color: #1c7c54;
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.close-button:hover {
+  background: #cdebdc;
+  transform: scale(1.08);
+}
+
+/* Inputs */
+.modal-form {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.modal-label {
+  font-weight: 600;
+  color: #1c7c54;
+  margin-bottom: 5px;
+}
+
+.modal-input {
+  width: 100%;
+  padding: 12px 15px;
+  border-radius: 50px;
+  border: 2px solid #ccc;
+  font-size: 16px;
+}
+
+/* Botón confirmar */
+.modal-buttons {
+  margin-top: 18px;
+  display: flex;
+  justify-content: center;
+}
+
+.btn-confirm {
+  background: #1c7c54;
+  color: white;
+  padding: 12px 20px;
+  border: none;
+  border-radius: 40px;
+  font-size: 16px;
+  cursor: pointer;
+  font-weight: 600;
+  width: 140px;
+  text-align: center;
+}
+
+.btn-confirm:disabled {
+  background: #b2c8be;
+  cursor: not-allowed;
+}

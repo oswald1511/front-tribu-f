@@ -1,0 +1,23 @@
+/* Panel principal blanco */
+.horas-panel {
+  background: #ffffff;
+  border: 1px solid var(--color-excel-border);
+  border-radius: 14px;
+  padding: 32px;
+  margin-top: 2rem;
+  margin-bottom: 2rem;
+}
+
+/* Título (igual al diseño PSA) */
+.panel-title {
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: var(--color-text-title);
+  margin-bottom: 1.5rem;
+}
+
+/* Contenedor del grid de la semana */
+.horas-grid-container {
+  background: transparent;
+  padding-top: 10px;
+}

@@ -79,7 +79,7 @@
                         </div>
                         
                         <button class="btn-preload" id="btn-abrir-modal">
-                            Costo Hora 
+                            Cargar Costo Hora 
                             <span class="icon-circle">
                                 <i class="fas fa-plus"></i>
                             </span>
@@ -204,7 +204,7 @@ async function fetchAndRenderCosts() {
             const rolInfo = roles.find(r => r.id === item.rol_id);
             let rolDisplay = item.rol_id;
             if (rolInfo) {
-                rolDisplay = `${rolInfo.nombre} ${rolInfo.experiencia}`;
+                rolDisplay = `${rolInfo.nombre} (${rolInfo.experiencia})`;
             }
             const tr = document.createElement('tr');
             tr.innerHTML =  `
@@ -230,7 +230,6 @@ async function fetchAndRenderCosts() {
 }
 
 // Lógica del Modal
-// REEMPLAZA TU FUNCIÓN setupModal() POR ESTA VERSIÓN CORREGIDA:
 
 function setupModal() {
     const modal = document.getElementById('modal-nuevo-costo');
@@ -341,11 +340,14 @@ function setupModal() {
         if (hayError) return;
 
         const nuevoDato = {
-            rol_id: parseInt(valRol),
+            rol_id: valRol,
             mes: valMes,
             costo_hora: parseFloat(valCosto),
-            moneda: "ARS"
         };
+
+        console.log(valRol, valMes, valCosto);
+
+         // Envío al servidor
 
         try {
             const res = await fetch('https://modulo-finanzas.onrender.com/costos-rol', {

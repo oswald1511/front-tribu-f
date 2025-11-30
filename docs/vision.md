@@ -41,12 +41,12 @@ El módulo está diseñado para integrarse tempranamente con el módulo de Carga
 
 ### Módulos que este Módulo Consume
 
-| Módulo / Sistema Externo | Tipo de Interacción | Descripción                                                                                                                                              |
-| ------------------------ | ------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| API de Proyectos         | API externa         | Obtiene la lista de proyectos y sus identificadores para agrupar las horas y los costos; los proyectos no se persisten localmente.                       |
-| API de Tareas            | API externa         | Consulta tareas asociadas a proyectos cuando es necesario para el cálculo y la trazabilidad; las tareas no se almacenan en la base de datos de Finanzas. |
-| API de Roles             | API externa         | Consulta los roles válidos y sus IDs externos; Finanzas solo persiste el costo por hora mensual asociado a cada perfil.                                  |
-| API de Recursos          | API externa         | Consulta los recursos con su noombre, apellido y que tipo de rol cumple en un proyecto.                                                                  |
+| Módulo / Sistema Externo | Tipo de Interacción | Descripción                                                                                                                                                                                                                          |
+| ------------------------ | ------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| API de Proyectos         | API externa         | Obtiene la lista de proyectos y sus identificadores para agrupar las horas y los costos; los proyectos no se persisten localmente.                                                                                                   |
+| API de Tareas            | API externa         | Consulta tareas asociadas a proyectos cuando es necesario para el cálculo y la trazabilidad; las tareas no se almacenan en la base de datos de Finanzas.                                                                             |
+| API de Roles             | API externa         | Consulta los roles válidos y sus IDs externos; Finanzas solo persiste el costo por hora mensual asociado a cada perfil. El módulo de Carga de Horas usa estos roles para calcular el costo de un proyecto en un determinado periodo. |
+| API de Recursos          | API externa         | Consulta los recursos con su nombre, apellido y que tipo de rol cumple en un proyecto.                                                                                                                                               |
 
 ## Consideraciones Técnicas
 

@@ -17,39 +17,19 @@ _Diagrama del modelo de dominio para el módulo de Carga de Horas y Finanzas_
 
 ## Entidades del Dominio
 
-### Proyecto
-- **Descripción:** Representa la iniciativa o trabajo global sobre el cual se imputan horas y costos.
-- **Responsabilidades:** Agrupar tareas y mantener la referencia de los costos mensuales.
-- **Atributos principales:** `id`, `nombre`, `descripción` (Ver Nota 1).
-
-### Tarea
-- **Descripción:** Unidad de trabajo específica dentro de un proyecto.
-- **Responsabilidades:** Permitir la asignación de recursos y la asociación de cargas de horas.
-- **Atributos principales:** `id`, `nombre`, `estado` (Ver Nota 1).
-
-### Recurso
-- **Descripción:** Persona o entidad que realiza el trabajo.
-- **Responsabilidades:** Estar a cargo de tareas y registrar las cargas de horas trabajadas.
-- **Atributos principales:** `id`, `nombre`, `apellido` (Ver Nota 1).
-
-### Rol
-- **Descripción:** Función o categoría profesional del recurso (ej. Desarrollador, QA).
-- **Responsabilidades:** Definir la categoría para determinar el costo por hora en los periodos mensuales.
-- **Atributos principales:** `id`, `nombre_rol` (Ver Nota 1).
-
 ### Carga
-- **Descripción:** Registro detallado del tiempo invertido por un recurso en una tarea.
-- **Responsabilidades:** Almacenar la cantidad de horas, la fecha y el detalle del trabajo realizado.
+- **Descripción:** Registro detallado del tiempo invertido.
+- **Responsabilidades:** Almacenar la cantidad de horas, la fecha y el detalle del trabajo realizado para su posterior imputación de costos.
 - **Atributos principales:** `id`, `Cantidad de Horas`, `Fecha`, `Detalle`.
 
 ### Costo proyecto mensual
-- **Descripción:** Entidad que agrupa los costos financieros de un proyecto para un mes específico.
-- **Responsabilidades:** Consolidar el costo mensual y vincularse con las cargas horarias correspondientes.
+- **Descripción:** Entidad que agrupa los costos financieros imputados a un proyecto para un mes específico.
+- **Responsabilidades:** Consolidar el costo mensual acumulado basándose en las cargas horarias.
 - **Atributos principales:** `proyecto_id`, `mes`, `costo_mensual`.
 
 ### Costo rol mensual
-- **Descripción:** Define el valor monetario de un rol específico en un mes determinado (tarifario temporal).
-- **Responsabilidades:** Establecer cuánto cuesta la hora de un rol en un periodo específico.
+- **Descripción:** Define el valor monetario (tarifario) de un rol específico en un mes determinado.
+- **Responsabilidades:** Establecer el costo por hora base para los cálculos financieros del periodo.
 - **Atributos principales:** `rol_id`, `mes`, `costo_hora`.
 
 ### Resumen Costo Proyecto
@@ -61,32 +41,22 @@ _Diagrama del modelo de dominio para el módulo de Carga de Horas y Finanzas_
 
 | Entidad Origen         | Relación             | Entidad Destino        | Descripción                                                                 |
 | ---------------------- | -------------------- | ---------------------- | --------------------------------------------------------------------------- |
-| **Proyecto** | esta organizado en   | **Tarea** | Un proyecto se descompone en muchas tareas.                                 |
-| **Proyecto** | referencia           | **Costo proy mensual** | Un proyecto tiene un registro de costos por cada mes.                       |
-| **Tarea** | tiene asociada       | **Carga** | Una tarea puede tener múltiples registros de carga de horas.                |
-| **Recurso** | esta a cargo de      | **Tarea** | Un recurso es responsable de una o varias tareas.                           |
-| **Recurso** | registra             | **Carga** | Un recurso crea múltiples registros de carga de horas.                      |
-| **Recurso** | Tiene                | **Rol** | Un recurso posee un rol específico asociado.                                |
-| **Rol** | referencia           | **Costo rol mensual** | Un rol puede tener diferentes costos dependiendo del mes.                   |
-| **Carga** | Utiliza              | **Costo proy mensual** | Las cargas de horas contribuyen al cálculo de un costo mensual de proyecto. |
-| **Costo proy mensual** | usa                  | **Costo rol mensual** | El costo del proyecto usa los costos de roles definidos para ese mes.       |
-| **Costo rol mensual** | consume              | **Resumen Costo Proy** | El resumen consume varios costos de roles para calcular totales.            |
+| **Carga** | Utiliza              | **Costo proy mensual** | Las cargas de horas contribuyen al cálculo y acumulación del costo mensual. |
+| **Costo proy mensual** | usa                  | **Costo rol mensual** | El cálculo del costo mensual utiliza la tarifa del rol definida para ese mes.|
+| **Costo rol mensual** | consume              | **Resumen Costo Proy** | El reporte de resumen consume los costos de roles para proyectar totales.   |
 
 ## Diccionario de Datos
 
 | Entidad                | Atributo              | Descripción                                       | Tipo Primitivo |
 | ---------------------- | --------------------- | ------------------------------------------------- | -------------- |
-| **Proyecto** | id                    | Identificador único del proyecto (Implícito).     | Integer (PK)   |
-| **Proyecto** | nombre                | Nombre descriptivo del proyecto (Implícito).      | String         |
-| **Tarea** | id                    | Identificador único de la tarea (Implícito).      | Integer (PK)   |
 | **Carga** | id                    | Identificador único de la carga.                  | Integer (PK)   |
 | **Carga** | Cantidad de Horas     | Tiempo dedicado a la tarea.                       | Decimal        |
 | **Carga** | Fecha                 | Día en que se realizó la carga.                   | Date           |
 | **Carga** | Detalle               | Descripción textual del trabajo realizado.        | String         |
-| **Costo proy mensual** | proyecto_id           | Identificador del proyecto asociado.              | Integer (FK)   |
+| **Costo proy mensual** | proyecto_id           | ID del proyecto externo asociado.                 | Integer (FK)   |
 | **Costo proy mensual** | mes                   | Mes y año al que corresponde el costo.            | Date/String    |
 | **Costo proy mensual** | costo_mensual         | Valor monetario acumulado del mes.                | Money/Decimal  |
-| **Costo rol mensual** | rol_id                | Identificador del rol asociado.                   | Integer (FK)   |
+| **Costo rol mensual** | rol_id                | ID del rol externo asociado.                      | Integer (FK)   |
 | **Costo rol mensual** | mes                   | Mes de vigencia del costo.                        | Date/String    |
 | **Costo rol mensual** | costo_hora            | Valor de la hora para ese rol en ese mes.         | Money/Decimal  |
 | **Resumen Costo Proy** | Mes de Inicio         | Inicio del rango de reporte.                      | Date           |
@@ -96,11 +66,10 @@ _Diagrama del modelo de dominio para el módulo de Carga de Horas y Finanzas_
 
 ## Notas Adicionales
 
-1.  **Nota sobre Atributos Implícitos:** Las entidades `Proyecto`, `Tarea`, `Recurso` y `Rol` se han documentado incluyendo atributos de identificación (`id`) y descriptivos (`nombre`) necesarios para garantizar la integridad referencial y la funcionalidad lógica del sistema, aunque estos no se encuentren explícitamente detallados en el diagrama visual original.
+1.  **Referencias Externas:** Las entidades `Proyecto`, `Tarea`, `Recurso` y `Rol` se consideran externas a este dominio. Solo se conservan sus identificadores (`ids`) como claves foráneas para mantener la integridad de los datos financieros.
 2.  **Atributos Derivados:** Los atributos marcados con `/` en la entidad `Resumen Costo Proyecto` son calculados en tiempo de ejecución.
-3.  **Histórico de Costos:** El modelo soporta la variación de costos de recursos a lo largo del tiempo mediante la entidad `Costo rol mensual`.
 
 ---
 
-**Versión:** 1.0  
+**Versión:** 1.1  
 **Estado:** En revisión

@@ -103,4 +103,4 @@ _Diagrama del modelo de dominio para el módulo de Carga de Horas y Finanzas_
 ---
 
 **Versión:** 1.0  
-**Estado:** Borrador
+**Estado:** En revisión

@@ -1,0 +1,161 @@
+/* ===== CONTENEDOR GENERAL ===== */
+
+.costos-container {
+  padding: 40px;
+  color: #333;
+}
+
+.costos-titulo {
+  font-size: 24px;
+  font-weight: bold;
+  margin-bottom: 30px;
+}
+
+/* ===== FILTROS ===== */
+
+.costos-filtros {
+  display: flex;
+  gap: 25px;
+  align-items: flex-end;
+  margin-bottom: 40px;
+  flex-wrap: wrap;
+}
+
+.campo {
+  display: flex;
+  flex-direction: column;
+}
+
+.campo label {
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+
+.campo select,
+.campo input[type="month"] {
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 50px;
+  width: 180px;
+  background: white;
+}
+
+/* ===== BOTÓN BUSCAR ===== */
+
+.btn-buscar {
+  background: #3b82f6;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 50px;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.btn-buscar:hover {
+  background: #2563eb;
+}
+
+/* ===== TABLA ===== */
+
+.tabla-costos-wrapper {
+  width: 100%;
+  overflow-x: auto;
+  padding-bottom: 10px;
+
+  /* ⭐ Esto tapa el fondo cuadriculado */
+  background: white;
+  border-radius: 8px;
+  border: 1px solid #ddd;
+}
+
+.tabla-costos {
+  width: 100%;
+  min-width: max-content;
+  border-collapse: collapse;
+  background: white; /* ⭐ fondo sólido */
+}
+
+.tabla-costos th {
+  background: #f5f5f5; /* encabezado gris claro */
+  padding: 12px;
+  text-align: left;
+  border-right: 1px solid #ddd;
+  font-weight: 600;
+}
+
+.tabla-costos td {
+  padding: 12px;
+  border-bottom: 1px solid #eee;
+  border-right: 1px solid #ddd;
+
+  background: white;
+}
+
+/* Filas alternadas */
+.tabla-costos tr:nth-child(even) td {
+  background: #fafafa !important;
+}
+
+/* ===== FILA TOTAL ===== */
+
+.fila-total td {
+  background: #f0f0f0 !important; /* gris un poco más fuerte */
+  font-weight: bold;
+}
+
+.total-label {
+  text-align: right;
+}
+
+.input-std-pill {
+  padding: 10px 16px;
+  border-radius: 50px;
+  border: 1px solid #ccc;
+  background: white;
+  font-size: 16px;
+  width: 200px;
+  appearance: none;
+  -webkit-appearance: none;
+  color: #333;
+  font-family: inherit;
+  cursor: pointer;
+}
+
+/* Ajuste para el ícono del calendario, que quede prolijo */
+.input-std-pill::-webkit-calendar-picker-indicator {
+  cursor: pointer;
+  margin-right: 6px;
+  filter: opacity(0.6);
+}
+
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.35);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 3000;
+}
+
+.modal-box {
+  background: white;
+  padding: 25px;
+  border-radius: 12px;
+  width: 350px;
+  text-align: center;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.modal-box h2 {
+  margin-bottom: 15px;
+  color: #d9534f; /* rojo error */
+}
+
+.modal-box p {
+  margin-bottom: 20px;
+}

@@ -1,0 +1,116 @@
+.form-grid {
+  background: #ffffff; /* BLANCO — NO GRIS */
+  padding: 28px 34px;
+  border-radius: 14px;
+  border: 1px solid var(--color-excel-border);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  display: flex;
+  flex-direction: column;
+  gap: 25px;
+  width: 100%;
+  margin-bottom: 2rem;
+}
+
+/* ===========================================================
+   FILAS
+=========================================================== */
+.form-row {
+  display: flex;
+  align-items: flex-end;
+  gap: 2rem;
+  flex-wrap: wrap;
+  width: 100%;
+}
+
+/* ===========================================================
+   GRUPOS
+=========================================================== */
+.form-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.form-group.small {
+  width: 130px;
+}
+
+/* ===========================================================
+   LABELS
+=========================================================== */
+.form-group label {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--color-header-bg);
+  margin-bottom: 6px;
+  padding-left: 4px;
+}
+
+.form-group input,
+.form-group select {
+  background: #ffffff;
+  border: 2.5px solid var(--color-header-btn); /* borde verde claro */
+  border-radius: 40px;
+  padding: 12px 20px;
+  font-size: 1rem;
+  font-weight: 600;
+  color: #444; /* texto gris profesional */
+  outline: none;
+  width: 260px;
+  transition: all 0.2s ease;
+}
+
+/* Placeholder gris real */
+.form-group input::placeholder {
+  color: #b5b5b5;
+}
+
+.form-group.small input {
+  width: 100px;
+  text-align: center;
+}
+
+/* FOCUS VERDE PSA */
+.form-group input:focus,
+.form-group select:focus {
+  border-color: var(--color-header-bg);
+  box-shadow: 0 0 0 4px rgba(34, 150, 122, 0.18);
+}
+
+/* ===========================================================
+   BOTÓN "Cargar"
+=========================================================== */
+.btn-cargar {
+  background: var(--color-header-bg); /* Verde PSA */
+  color: white;
+  border: none;
+  padding: 14px 32px;
+  border-radius: 40px;
+
+  font-size: 1.1rem;
+  font-weight: 700;
+
+  cursor: pointer;
+
+  transition: 0.25s ease;
+  height: 52px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+
+.btn-cargar:hover {
+  background: #1f7c63;
+  transform: translateY(-2px);
+}
+
+.btn-cargar:active {
+  transform: scale(0.96);
+}
+
+/* Botón NUNCA azul */
+button {
+  background: var(--color-header-bg) !important;
+  color: white !important;
+}

@@ -1,0 +1,81 @@
+.week-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  width: 95%;
+  max-width: 1400px;
+  margin: 20px auto;
+  background: #fbfafa;
+  border: 1px solid #ccc;
+}
+
+.day-column {
+  border-right: 1px solid #ccc;
+  background: repeating-linear-gradient(
+    #ffffff,
+    #ffffff 50px,
+    #f1f1f1 50px,
+    #f1f1f1 100px
+  );
+  display: flex;
+  flex-direction: column;
+}
+
+.day-column:last-child {
+  border-right: none;
+}
+
+.day-header {
+  text-align: center;
+  font-weight: bold;
+  padding: 10px 0;
+  border-bottom: 1px solid #aaa;
+  background: #ffffff;
+  position: sticky;
+  top: 0;
+  z-index: 2;
+}
+
+.bloque-hora {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+
+  gap: 4px;
+  padding: 12px 14px;
+  border: 1px solid rgba(0, 0, 0, 0.25);
+  border-radius: 8px;
+
+  box-sizing: border-box;
+
+  min-height: 100px;
+}
+
+.bloque-hora p {
+  margin: 0;
+  width: 95%;
+  line-height: 1.25;
+  white-space: normal;
+  text-align: center;
+  word-break: break-word;
+
+  .bloque-hora p:first-child {
+    margin-bottom: 2px;
+  }
+}
+
+.acciones {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.link-btn {
+  border: 1px solid #666;
+  background: #f5f5f5;
+  border-radius: 5px;
+  padding: 3px 10px;
+  cursor: pointer;
+}

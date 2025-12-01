@@ -196,23 +196,27 @@ async function fetchAndRenderCosts() {
         // Guardamos los roles globalmente para usarlos en el modal
         window.rolesData = roles;
 
-        const filtered = data.filter(item => item.mes === visualizedKey);
+        // Construimos un mapa de costos por rol para el mes visualizado
+        const costsForMonth = data.filter(item => item.mes === visualizedKey);
+        const costMap = new Map();
+        costsForMonth.forEach(it => costMap.set(it.rol_id, it));
+
         const tbody = document.getElementById('costs-table-body');
         tbody.innerHTML = '';
-        
-        filtered.forEach(item => {
-            const rolInfo = roles.find(r => r.id === item.rol_id);
-            let rolDisplay = item.rol_id;
-            if (rolInfo) {
-                rolDisplay = `${rolInfo.nombre} (${rolInfo.experiencia})`;
-            }
+
+        // Nos aseguramos de iterar todos los roles; si un rol no tiene costo, mostrar $0
+        roles.forEach(rol => {
+            const item = costMap.get(rol.id);
+            const costoValue = item ? item.costo_hora : 0;
+            const mesValue = item ? item.mes : visualizedKey;
+
             const tr = document.createElement('tr');
             tr.innerHTML =  `
-                <td>${rolDisplay}</td>
+                <td>${rol.nombre} (${rol.experiencia})</td>
                 <td>
                     <div class="input-with-symbol">
                         <span>$</span>
-                        <input type="number" readonly class="cost-input-inline" value="${item.costo_hora}" onchange="cargaCostoHora(event.target, '${item.rol_id}', '${item.mes}')">
+                        <input type="number" readonly class="cost-input-inline" value="${costoValue}" onchange="cargaCostoHora(event.target, '${rol.id}', '${mesValue}')">
                     </div>
                 </td>
             `;

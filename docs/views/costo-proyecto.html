@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Costo por Proyecto - Gestión PSA</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="../styles/style.css">
+</head>
+<body>
+
+    <div class="app-container">
+        <header class="app-header">
+                <div class="header-left">
+                <div class="logo">M</div>
+                <div class="header-dropdown">
+                    <div class="dropbtn">
+                        Finanzas <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="dropdown-content">
+                        <a href="https://frontend-theta-two-cg3ogkxl95.vercel.app">Carga de Horas</a>
+                        <a href="costo-proyecto.html" style="font-weight:bold; color:var(--color-header-bg);">Finanzas</a>
+                    </div>
+                </div>
+            </div>
+            <div class="header-right"><span class="logo-psa">PSA</span></div>
+        </header>
+
+        <main class="main-content">
+            <div id="modulo-finanzas-content">
+                
+                <div class="sub-nav-container">
+                    <nav class="nav-switch">
+                        <a href="#" class="nav-switch-item active">Costo por proyecto</a>
+                        <a href="costo-rol.html" class="nav-switch-item">Costo por Rol</a>
+                    </nav>
+                </div>
+
+                <div class="finance-view active">
+                    <h1 class="page-title">Reporte de costos por proyecto</h1>
+                    
+                    <div class="filters-inline" style="display:flex; gap:12px; align-items:center; margin-bottom:25px;">
+                        <div class="filter-group" style="margin:0;">
+                            <label>Año</label>
+                            <select id="filtro-anio" class="input-psa">
+                                <option value="">Cargando años...</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <section class="project-grid-container">
+                        <div class="excel-grid-wrapper">
+                            <table class="excel-grid">
+                                <thead>
+                                    <tr>
+                                        <th>Proyecto</th>
+                                        <th style="text-align: center;">Enero</th>
+                                        <th style="text-align: center;">Febrero</th>
+                                        <th style="text-align: center;">Marzo</th>
+                                        <th style="text-align: center;">Abril</th>
+                                        <th style="text-align: center;">Mayo</th>
+                                        <th style="text-align: center;">Junio</th>
+                                        <th style="text-align: center;">Julio</th>
+                                        <th style="text-align: center;">Agosto</th>
+                                        <th style="text-align: center;">Septiembre</th>
+                                        <th style="text-align: center;">Octubre</th>
+                                        <th style="text-align: center;">Noviembre</th>
+                                        <th style="text-align: center;">Diciembre</th>
+                                        <th style="text-align: center;">Costo Total</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    
+                                </tbody>
+                            </table>
+                        </div>
+                    </section>
+                </div>
+
+            </div>
+        </main>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/es.js"></script>
+    <script>
+    document.addEventListener('DOMContentLoaded', () => {
+
+    // ======================================================
+    // LÓGICA DEL DROPDOWN (HEADER)
+    // ======================================================
+    const dropdowns = document.querySelectorAll('.header-dropdown');
+
+    dropdowns.forEach(dropdown => {
+        const btn = dropdown.querySelector('.dropbtn');
+        const content = dropdown.querySelector('.dropdown-content');
+        const arrow = btn.querySelector('i');
+
+        if(btn && content) {
+            btn.addEventListener('click', (e) => {
+                e.stopPropagation(); 
+                
+                // Cerrar otros dropdowns
+                document.querySelectorAll('.dropdown-content').forEach(c => {
+                    if (c !== content) c.classList.remove('show');
+                });
+
+                // Alternar el actual
+                content.classList.toggle('show');
+                if (arrow) arrow.classList.toggle('rotate');
+            });
+        }
+    });
+
+    // Cerrar menú al hacer clic fuera
+    window.addEventListener('click', () => {
+        document.querySelectorAll('.dropdown-content').forEach(content => {
+            content.classList.remove('show');
+        });
+        document.querySelectorAll('.dropbtn i').forEach(arrow => {
+            arrow.classList.remove('rotate');
+        });
+    });
+
+    // 1. Configuración para inputs de solo FECHA (ej: Carga de Horas)
+    flatpickr("input[type='date']", {
+        locale: "es",           // Idioma español
+        dateFormat: "Y-m-d",    // Formato para enviar al backend
+        altInput: true,         // Muestra una fecha más legible al usuario
+        altFormat: "j F, Y",    // Ej: "15 Noviembre, 2025"
+        allowInput: true        // Permite escribir si se desea
+    });
+
+    // 2. Configuración para inputs de MES (ej: Precarga, Costos)
+    // Solo usar monthSelectPlugin si está disponible; si no, inicializar flatpickr básico
+    try {
+        if (typeof monthSelectPlugin !== 'undefined') {
+            flatpickr("input[type='month']", {
+                locale: "es",
+                plugins: [
+                    new monthSelectPlugin({
+                        shorthand: true, // Muestra "Ene", "Feb" en vez de "Enero"
+                        dateFormat: "Y-m", // Formato YYYY-MM para el backend
+                        altFormat: "F Y",  // Ej: "Noviembre 2025" visualmente
+                    })
+                ],
+                altInput: true
+            });
+        } else {
+            flatpickr("input[type='month']", { locale: 'es', dateFormat: 'Y-m', altInput: true });
+        }
+    } catch (e) {
+        console.warn('No se pudo inicializar month picker:', e);
+    }
+});
+
+// ======================================================
+// Lógica para Costo por Proyecto
+// - Consulta `costos-proyecto?anio=YYYY`
+// - Consulta lista de proyectos (mapea id -> nombre)
+// - Rellena la tabla por meses (Enero..Diciembre)
+// ======================================================
+
+async function fetchAndRenderCostosProyecto() {
+    const selectYear = document.getElementById('filtro-anio');
+    const year = selectYear ? selectYear.value : '';
+
+    // If a year select exists, require selection (do not auto-default)
+    if (selectYear && (!year || year.trim() === '')) {
+        const tableBody = document.querySelector('.excel-grid tbody');
+        if (tableBody) tableBody.innerHTML = '<tr><td colspan="14" style="color:#666;">Seleccione un año para generar el reporte.</td></tr>';
+        return;
+    }
+
+    const tableBody = document.querySelector('.excel-grid tbody');
+    if (!tableBody) return;
+
+    // Cabeceras: meses del año
+    const months = Array.from({length:12}, (_,i) => {
+        const m = i+1;
+        return `${year}-${String(m).padStart(2,'0')}`;
+    });
+
+    try {
+        // 1) Obtener costos por proyecto
+        const res = await fetch(`https://modulo-finanzas.onrender.com/costos-proyecto?anio=${year}`);
+        const costos = await res.json();
+
+        // 2) Obtener listado de proyectos (usamos corsproxy para evitar CORS si hace falta)
+        const proyectosRes = await fetch('https://corsproxy.io/?https://anypoint.mulesoft.com/mocking/api/v1/sources/exchange/assets/32c8fe38-22a6-4fbb-b461-170dfac937e4/proyectos-api/1.0.0/m/proyectos');
+        const proyectos = await proyectosRes.json();
+        const proyectosMap = new Map((proyectos || []).map(p => [p.id, p]));
+
+        // 3) Renderizar filas
+        tableBody.innerHTML = '';
+        costos.forEach(item => {
+            const proyectoId = item.proyectoId || item.proyecto_id || item.id;
+            const proyectoInfo = proyectosMap.get(proyectoId);
+            const nombreProyecto = proyectoInfo ? proyectoInfo.nombre : (proyectoId || 'Sin nombre');
+
+            // Montar celdas de meses
+            const monthCells = months.map(mKey => {
+                const val = item[mKey] || 0;
+                return `<td style="text-align: center;">${formatCurrency(val)}</td>`;
+            }).join('');
+
+            const total = item.total || Object.values(item).reduce((acc,v) => {
+                if (typeof v === 'number') return acc + v; return acc;
+            }, 0);
+
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+                <td>${escapeHtml(nombreProyecto)}</td>
+                ${monthCells}
+                <td style="text-align: center;">${formatCurrency(total)}</td>
+            `;
+            tableBody.appendChild(tr);
+        });
+
+    } catch (err) {
+        console.error('Error al cargar costos por proyecto:', err);
+        tableBody.innerHTML = '<tr><td colspan="14" style="color: #a00;">Error al cargar datos. Revisa la consola.</td></tr>';
+    }
+}
+
+function formatCurrency(value) {
+    const n = Number(value) || 0;
+    return '$ ' + n.toLocaleString('es-AR', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+}
+
+function escapeHtml(text) {
+    if (!text) return '';
+    return String(text)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+}
+
+// Obtiene años disponibles: intenta endpoints explícitos y si no existen prueba años recientes.
+async function fetchAvailableYears() {
+    const selectYear = document.getElementById('filtro-anio');
+    if (!selectYear) return;
+
+    try {
+        // Obtener años desde backend-carga-horas. Si falla (CORS), intentar via corsproxy.
+        let payload = null;
+        try {
+            const res = await fetch('https://backend-carga-horas.onrender.com/proyecto-recurso-mes');
+            if (res.ok) {
+                payload = await res.json();
+            } else {
+                console.warn('backend-carga-horas responded', res.status, 'trying proxy...');
+            }
+        } catch (err) {
+            console.warn('Direct fetch to backend-carga-horas failed, trying proxy...', err);
+        }
+
+        if (!payload) {
+            try {
+                const proxyUrl = 'https://corsproxy.io/?https://backend-carga-horas.onrender.com/proyecto-recurso-mes';
+                const pr = await fetch(proxyUrl);
+                if (pr.ok) payload = await pr.json();
+                else console.warn('Proxy fetch failed', pr.status);
+            } catch (err) {
+                console.warn('Proxy fetch to backend-carga-horas failed', err);
+            }
+        }
+
+        if (!payload) {
+            console.warn('No se pudo obtener datos de proyecto-recurso-mes ni por proxy. Mostrar mensaje en UI.');
+            selectYear.innerHTML = '';
+            const opt = document.createElement('option');
+            opt.value = '';
+            opt.textContent = 'No se pudieron cargar años (CORS)';
+            selectYear.appendChild(opt);
+            return;
+        }
+        if (!Array.isArray(payload) || payload.length === 0) {
+            console.warn('Respuesta vacía de proyecto-recurso-mes');
+            return;
+        }
+
+        // Extraer años únicos desde anioMes (formato YYYY-MM)
+        const yearsSet = new Set();
+        payload.forEach(item => {
+            const m = (item.anioMes || '').match(/^(\d{4})-\d{2}$/);
+            if (m) yearsSet.add(m[1]);
+        });
+
+        const years = Array.from(yearsSet).sort((a,b) => Number(b) - Number(a));
+        if (years.length === 0) {
+            console.warn('No se extrajeron años válidos de proyecto-recurso-mes');
+            return;
+        }
+
+        // Poblar select con opción inicial 'Seleccionar año'
+        const previous = selectYear.value;
+        selectYear.innerHTML = '';
+        const placeholder = document.createElement('option');
+        placeholder.value = '';
+        placeholder.textContent = 'Seleccionar año';
+        selectYear.appendChild(placeholder);
+        years.forEach(y => {
+            const opt = document.createElement('option');
+            opt.value = String(y);
+            opt.textContent = String(y);
+            selectYear.appendChild(opt);
+        });
+
+        // Restaurar selección previa si aplica
+        if (previous && years.includes(previous)) selectYear.value = previous;
+        else selectYear.value = '';
+
+        // Deshabilitar botones hasta que el usuario seleccione un año
+        const btnGenerar = document.getElementById('btn-generar-reporte');
+        const btnReload = document.getElementById('btn-reload-reporte');
+        if (btnGenerar) btnGenerar.disabled = true;
+        if (btnReload) btnReload.disabled = true;
+
+        // Cuando el usuario seleccione un año, habilitar botones
+        selectYear.addEventListener('change', () => {
+            const val = selectYear.value;
+            if (btnGenerar) btnGenerar.disabled = !val;
+            if (btnReload) btnReload.disabled = !val;
+        });
+
+    } catch (err) {
+        console.error('fetchAvailableYears error:', err);
+    }
+}
+
+// Inicializar y escuchar cambios de año
+    document.addEventListener('DOMContentLoaded', () => {
+    const selectYear = document.getElementById('filtro-anio');
+    const btnGenerar = document.getElementById('btn-generar-reporte');
+    const btnReload = document.getElementById('btn-reload-reporte');
+    if (btnGenerar) {
+        btnGenerar.addEventListener('click', fetchAndRenderCostosProyecto);
+    }
+    if (btnReload) {
+        btnReload.addEventListener('click', async () => {
+            // simple visual feedback: disable while reloading
+            btnReload.disabled = true;
+            try {
+                await fetchAndRenderCostosProyecto();
+            } finally {
+                btnReload.disabled = false;
+            }
+        });
+    }
+
+    // Cargar años primero (intenta endpoints explícitos, si no existe, prueba años recientes)
+    (async function initYearsThenLoad() {
+        try {
+            await fetchAvailableYears();
+        } catch (e) {
+            console.warn('fetchAvailableYears error:', e);
+        }
+        if (selectYear) selectYear.addEventListener('change', fetchAndRenderCostosProyecto);
+        // Carga inicial ahora que select ya está poblado (o quedó con fallback)
+        fetchAndRenderCostosProyecto();
+    })();
+});
+
+    </script>
+</body>
+</html>
